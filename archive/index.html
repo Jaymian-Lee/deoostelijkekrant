@@ -58,7 +58,7 @@ fetch('../data/issues.json').then(r=>r.json()).then(items=>{
  const list=document.getElementById('archive-list'); list.innerHTML='';
  [...items].sort((a,b)=>b.date.localeCompare(a.date)).forEach(it=>{
    const d=document.createElement('div'); d.className='card';
-   d.innerHTML=`<a href="../editions/${it.slug}/"><b>${it.title}</b></a><br><span class="muted">Datum: ${it.date} · Auteur: <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">${it.author}</a> · Gebied: ${it.area}</span><p>${it.summary}</p>`;
+   d.innerHTML=`<a href="../editions/${it.slug}/"><b>${it.title}</b></a><br><span class="muted">Datum: ${it.date} · Auteur: <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">${it.author}</a> · Gebied: ${it.area}</span><p>${it.summary}</p><p><a href="../editions/${it.slug}/"><b>Lees dit bericht →</b></a></p>`;
    list.appendChild(d);
  });
  if(!items.length) list.textContent='Nog geen edities.';

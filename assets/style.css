@@ -51,7 +51,7 @@ img{max-width:100%}
 /* New masthead layout */
 .masthead-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:-2px -8px 2px 0}
 .kicker-left{font-variant:small-caps;letter-spacing:.16em;color:var(--muted);font-size:.92rem;margin:0;padding-top:2px}
-.logo-top-right{width:min(200px,30vw);height:auto;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.14))}
+.logo-top-right{width:min(200px,30vw);height:auto;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.14));margin:-40px -40px 0 0}
 .masthead h1{margin-top:-2px}
 
 .mobile-nav-toggle{display:none;border:1px solid rgba(0,0,0,.4);background:transparent;padding:6px 10px;text-transform:uppercase;letter-spacing:.08em;font-size:.78rem}

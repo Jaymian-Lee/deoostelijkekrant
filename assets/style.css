@@ -36,3 +36,6 @@ h1{margin:0;font-size:3.1rem;line-height:1;letter-spacing:.02em;font-family:"Pla
 .social-links svg{width:16px;height:16px;display:block;fill:currentColor}
 footer{margin-top:18px;border-top:3px double var(--ink);padding-top:12px;display:flex;justify-content:space-between;flex-wrap:wrap;font-size:.95rem;color:var(--muted);gap:10px}
 img{max-width:100%}
+
+.brand-title{display:flex;align-items:center;justify-content:center;gap:10px}
+.brand-icon{width:30px;height:30px;display:inline-block;vertical-align:middle}

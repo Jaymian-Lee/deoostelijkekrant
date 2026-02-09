@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jaymian-lee.github.io/deoostelijkekrant/sitemap.xml

@@ -24,7 +24,7 @@
       --ink:#161616;
       --muted:#4a4a4a;
       --rule:rgba(0,0,0,.18);
-      --accent:#5a1a1a;
+      --accent:#8b1d1d;
     }
 
 /* KRANTENTITEL */
@@ -213,10 +213,10 @@
       padding:12px 14px;
       border:1px solid rgba(0,0,0,.25);
       background:transparent;
-      border-left:4px solid var(--ink);
+      border-left:4px solid var(--accent);
       font-size:1.05rem;
     }
-    .pull b{ color:var(--ink); }
+    .pull b{ color:var(--accent); }
 
     .stars{
       font-size:1.05rem;
@@ -253,14 +253,16 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      border:1px solid var(--ink);
+      border:1px solid rgba(0,0,0,.7);
       border-radius:2px;
       background:transparent;
       color:var(--ink);
       text-decoration:none;
     }
     .social-links a:hover{
-      background:rgba(0,0,0,.06);
+      background:rgba(139,29,29,.08);
+      border-color:var(--accent);
+      color:var(--accent);
     }
     .social-links svg{
       width:16px;

@@ -88,7 +88,7 @@ fetch('data/issues.json').then(r=>r.json()).then(items=>{
   const card=document.getElementById('latest-card');
   if(!latest){ hero.innerHTML='<h2>Nog geen editie</h2>'; card.textContent='Nog geen edities.'; return; }
   hero.innerHTML=`<h2>${latest.title}</h2><div class="byline"><span><span class="badge">LAATSTE EDITIE</span> Redactie <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a></span><span>${latest.date} · ${latest.area}</span></div><p>${latest.summary}</p><p><a href="editions/${latest.slug}.html"><b>Lees volledige editie →</b></a></p>`;
-  card.innerHTML=`<b>${latest.title}</b><p class="muted">Datum: ${latest.date} · Auteur: ${latest.author}</p><p>${latest.summary}</p>`;
+  card.innerHTML=`<a href="editions/${latest.slug}.html"><b>${latest.title}</b></a><p class="muted">Datum: ${latest.date} · Auteur: ${latest.author}</p><p>${latest.summary}</p><p><a href="editions/${latest.slug}.html"><b>Lees dit bericht →</b></a></p>`;
 });
 </script>
 </body></html>

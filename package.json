@@ -1,0 +1,23 @@
+{
+  "name": "deoostelijkekrant",
+  "version": "1.0.0",
+  "description": "Statische krant-site voor de Minecraft SMP van JaymianLee.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jaymian-Lee/deoostelijkekrant.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jaymian-Lee/deoostelijkekrant/issues"
+  },
+  "homepage": "https://github.com/Jaymian-Lee/deoostelijkekrant#readme",
+  "dependencies": {
+    "sharp": "^0.34.4"
+  }
+}

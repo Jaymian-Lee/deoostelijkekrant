@@ -8,6 +8,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css"/>
+  <style>
+    .hero{border-bottom:1px solid var(--rule);padding-bottom:14px;margin-bottom:14px}
+    .hero h2{margin:0 0 6px 0;font-size:2.1rem;line-height:1.05}
+    .byline{display:flex;justify-content:space-between;flex-wrap:wrap;color:var(--muted);font-size:.95rem;gap:10px}
+    .badge{border:1px solid rgba(0,0,0,.45);padding:1px 8px;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em}
+    .pull{margin:10px 0 14px;padding:12px 14px;border:1px solid rgba(0,0,0,.25);border-left:4px solid var(--accent);font-size:1.05rem;background:rgba(255,255,255,.35)}
+    .follow-writer{margin:18px 0 6px;padding:10px 0 8px;border-top:3px double var(--ink);border-bottom:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between}
+    .follow-writer .label{font-size:.85rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+    .social-links{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .social-links a{width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,0,0,.7);border-radius:2px;background:transparent;color:var(--ink);text-decoration:none}
+    .social-links a:hover{background:rgba(139,29,29,.08);border-color:var(--accent);color:var(--accent)}
+    .social-links svg{width:16px;height:16px;display:block;fill:currentColor}
+  </style>
 </head>
 <body>
 <main class="paper">
@@ -26,40 +39,51 @@
     </div>
   </header>
 
-  <section class="section">
-    <h2>Laatste nieuws</h2>
-    <div class="card" id="latest-card">Laden...</div>
-  </section>
+  <section class="hero" id="hero">Laden...</section>
 
   <div class="grid">
     <section class="section">
-      <h3>Wat is De Oostelijke Krant?</h3>
-      <p>Een roleplay/survival-krant voor de Minecraft SMP. Elke editie bundelt de belangrijkste gebeurtenissen uit Oost: chaos, politiek, drama, bouwprojecten en community moments.</p>
-      <p class="muted">Nieuwe editie? Geef Dirk gewoon een opsomming van wat er gebeurd is. Dan maken we er een nieuwe krant van en zetten we hem online in dezelfde stijl.</p>
-    </section>
-    <aside class="sidebar section">
-      <h3>Snel naar</h3>
-      <div class="list">
-        <div class="card"><a href="archive.html"><b>Bekijk het archief</b></a><br><span class="muted">Alle recente edities met datum en auteur.</span></div>
-        <div class="card"><a href="contact.html"><b>Tip insturen</b></a><br><span class="muted">Zelf een topic geven? Laat het weten via Twitch chat.</span></div>
+      <h3>Laatste berichten uit de regio</h3>
+      <div class="card" id="latest-card">Laden...</div>
+      <div class="card">
+        <b>Nieuwe editie laten maken?</b>
+        <p class="muted">Stuur Dirk een korte opsomming (wat/waar/wie/quotes) en de krant wordt in dezelfde stijl bijgewerkt en online gezet.</p>
       </div>
+    </section>
+
+    <aside class="sidebar section">
+      <h3>Van de redactie</h3>
+      <p>De Oostelijke Krant brengt het verhaal van Oost: drama, politiek, bouwprojecten en community chaos.</p>
+      <div class="pull"><b>Redactienotitie:</b> feiten eerst, memes daarna.</div>
+      <div class="card"><a href="archive.html"><b>Bekijk het archief →</b></a><br><span class="muted">Alle recente edities met datum en auteur.</span></div>
+      <div class="card"><a href="contact.html"><b>Tip insturen →</b></a><br><span class="muted">Zelf een topic geven? Stuur in de chat van JaymianLee op Twitch.</span></div>
     </aside>
   </div>
 
-  <div class="follow-writer"><div class="label">Volg JaymianLee</div><div class="social-links"><a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">Twitch</a> · <a href="https://www.tiktok.com/" target="_blank" rel="noopener">TikTok</a> · <a href="https://www.instagram.com/jaymianlee_/" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube</a></div></div><footer>
-    <span>© De Oostelijke Krant</span>
-    <span>Hoofdredactie: <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a></span>
+  <div class="follow-writer">
+    <div class="label">Volg JaymianLee</div>
+    <div class="social-links">
+      <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener" aria-label="Twitch"><svg viewBox="0 0 24 24"><path d="M4 2h18v12l-5 5h-4l-3 3H7v-3H4V2zm15 11V4H6v11h4v3l3-3h4l2-2zm-7-1H9V7h3v5zm5 0h-3V7h3v5z"/></svg></a>
+      <a href="https://www.tiktok.com/@jaymianlee" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M16 3c.7 1.6 2 2.9 3.6 3.6v2.9c-1.6-.1-3-.7-4.1-1.7v6.5a5.7 5.7 0 1 1-5.7-5.7c.4 0 .8 0 1.2.1v3a2.7 2.7 0 1 0 2.7 2.7V3h2.3z"/></svg></a>
+      <a href="https://www.instagram.com/jaymianlee_/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 7.3A4.7 4.7 0 1 0 16.7 12 4.7 4.7 0 0 0 12 7.3zm0 7.7A3 3 0 1 1 15 12a3 3 0 0 1-3 3zm6-8.2a1.1 1.1 0 1 1-1.1-1.1A1.1 1.1 0 0 1 18 6.8z"/><path d="M20.2 6.1a3.8 3.8 0 0 0-2.3-2.3C16.6 3.4 12 3.4 12 3.4s-4.6 0-5.9.4a3.8 3.8 0 0 0-2.3 2.3C3.4 7.4 3.4 12 3.4 12s0 4.6.4 5.9a3.8 3.8 0 0 0 2.3 2.3c1.3.4 5.9.4 5.9.4s4.6 0 5.9-.4a3.8 3.8 0 0 0 2.3-2.3c.4-1.3.4-5.9.4-5.9s0-4.6-.4-5.9z"/></svg></a>
+      <a href="https://www.youtube.com/@JaymianLee" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M23 12.2s0-3.2-.4-4.6a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.5.5a3 3 0 0 0-2.1 2.1C1 9 1 12.2 1 12.2s0 3.2.4 4.6a3 3 0 0 0 2.1 2.1c1.5.4 8.5.4 8.5.4s7 0 8.5-.5a3 3 0 0 0 2.1-2.1c.4-1.4.4-4.6.4-4.6zM10 15.5V8.9l5.7 3.3-5.7 3.3z"/></svg></a>
+    </div>
+  </div>
+
+  <footer>
+    <span>© De Oostelijke Krant — door <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a></span>
+    <span>Laatste update: live uit Oost</span>
   </footer>
 </main>
+
 <script>
 fetch('data/issues.json').then(r=>r.json()).then(items=>{
   const latest=[...items].sort((a,b)=>b.date.localeCompare(a.date))[0];
-  const el=document.getElementById('latest-card');
-  if(!latest){el.textContent='Nog geen edities.';return;}
-  el.innerHTML=`<h3 style="margin:0 0 6px 0">${latest.title}</h3>
-    <p class="muted" style="margin:0 0 10px 0">${latest.date} · ${latest.author} · ${latest.area}</p>
-    <p>${latest.summary}</p>
-    <p><a href="editions/${latest.slug}.html"><b>Lees de volledige editie →</b></a></p>`;
+  const hero=document.getElementById('hero');
+  const card=document.getElementById('latest-card');
+  if(!latest){ hero.innerHTML='<h2>Nog geen editie</h2>'; card.textContent='Nog geen edities.'; return; }
+  hero.innerHTML=`<h2>${latest.title}</h2><div class="byline"><span><span class="badge">LAATSTE EDITIE</span> Redactie <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a></span><span>${latest.date} · ${latest.area}</span></div><p>${latest.summary}</p><p><a href="editions/${latest.slug}.html"><b>Lees volledige editie →</b></a></p>`;
+  card.innerHTML=`<b>${latest.title}</b><p class="muted">Datum: ${latest.date} · Auteur: ${latest.author}</p><p>${latest.summary}</p>`;
 });
 </script>
 </body></html>

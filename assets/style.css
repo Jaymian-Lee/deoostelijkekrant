@@ -83,3 +83,10 @@ img{max-width:100%}
   body.menu-open .mobile-menu-panel{transform:translateX(0)}
   body.menu-open{overflow:hidden}
 }
+
+
+/* Keep meta tags side-by-side on mobile */
+@media (max-width:760px){
+  .meta{display:flex;flex-wrap:nowrap;justify-content:space-between;gap:8px}
+  .meta .tag{flex:1 1 0;text-align:center;padding:4px 6px;font-size:.76rem;letter-spacing:.04em;white-space:nowrap}
+}

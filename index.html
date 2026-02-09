@@ -101,6 +101,7 @@
       padding:4px 10px;
       border-radius:999px;
       background:rgba(255,255,255,.35);
+      white-space:nowrap;
     }
 
     .lead{
@@ -240,6 +241,40 @@
       body{ background:white; padding:0; }
       .paper{ box-shadow:none; border:none; }
     }
+
+    @media (max-width:680px){
+      body{ padding:12px; }
+      .paper{ padding:20px 16px 26px; }
+      .masthead{ margin-bottom:12px; padding-bottom:10px; }
+      .masthead h1{ font-size:2.4rem; }
+      h1{ font-size:2.4rem; }
+      .kicker{ font-size:.8rem; }
+      .meta{
+        justify-content:flex-start;
+        gap:8px;
+        font-size:.85rem;
+      }
+      .meta .tag{ padding:3px 8px; }
+      .lead h2{ font-size:1.55rem; }
+      .byline{ font-size:.85rem; }
+      .pull{ font-size:.98rem; }
+      .streamer-banner{ padding:14px; }
+      .streamer-banner a{ font-size:1.1rem; }
+      footer{ font-size:.85rem; }
+    }
+
+    @media (max-width:480px){
+      body{ padding:10px; }
+      .paper{ padding:16px 12px 22px; }
+      .masthead h1{ font-size:2.05rem; }
+      h1{ font-size:2.05rem; }
+      .lead h2{ font-size:1.35rem; }
+      .section h3{ font-size:1rem; }
+      .meta{ gap:6px; }
+      .meta .tag{ width:100%; text-align:center; }
+      .streamer-banner a{ font-size:1rem; }
+      .stars{ font-size:.98rem; }
+    }
   </style>
 </head>
 
@@ -258,7 +293,7 @@
   <section class="lead">
     <h2>ninja_Daley van trap gevallen — “(kusjes) (7she)”</h2>
     <div class="byline">
-      <span><span class="badge">BREAKING</span> Redactie SMP</span>
+      <span><span class="badge">BREAKING</span> Redatcie SMP (<a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a>)</span>
       <span>Locatie: Oost</span>
     </div>
 

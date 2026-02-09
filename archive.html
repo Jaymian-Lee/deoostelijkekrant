@@ -10,8 +10,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css"/>
 </head><body><main class="paper">
-<header class="masthead"><div class="kicker">Alle edities</div><div class="site-logo-wrap"><img class="site-logo" src="assets/logo-deoostelijkekrant.png" alt="De Oostelijke Krant logo"></div><h1>Archief</h1>
-<div class="nav"><a href="index.html">Home</a><a href="archive.html">Archief</a><a href="contact.html">Contact</a></div>
+<header class="masthead">
+    <div class="masthead-top"><p class="kicker-left">Alle edities</p><img class="logo-top-right" src="assets/logo-deoostelijkekrant.png" alt="De Oostelijke Krant logo"></div><h1 class="home-main-title">Archief</h1>
+<button class="mobile-nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav">Menu</button>
+    <div class="nav" id="main-nav"><a href="index.html">Home</a><a href="archive.html">Archief</a><a href="contact.html">Contact</a></div>
 <div class="meta"><span class="tag">Krantarchief</span><span class="tag">Auteur: <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a></span></div>
 </header>
 <section class="section"><h2>Recente kranten</h2><div id="archive-list" class="list">Laden...</div></section>
@@ -39,5 +41,17 @@ fetch('data/issues.json').then(r=>r.json()).then(items=>{
  });
  if(!items.length) list.textContent='Nog geen edities.';
 });
+</script>
+
+<script>
+(() => {
+  const toggle = document.querySelector('.mobile-nav-toggle');
+  const nav = document.querySelector('.nav');
+  if (!toggle || !nav) return;
+  toggle.addEventListener('click', () => {
+    const open = nav.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+})();
 </script>
 </body></html>

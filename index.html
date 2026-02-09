@@ -271,6 +271,37 @@
       fill:currentColor;
     }
 
+    .print-cta{
+      margin:12px 0 6px;
+      padding:10px 0 8px;
+      border-top:1px solid var(--rule);
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px 12px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .print-cta button{
+      font-family: inherit;
+      font-size:.9rem;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      padding:6px 12px;
+      border:1px solid var(--ink);
+      background:transparent;
+      cursor:pointer;
+    }
+    .print-cta button:hover{
+      border-color:var(--accent);
+      color:var(--accent);
+    }
+    .print-cta .note{
+      width:100%;
+      font-size:.82rem;
+      color:var(--muted);
+      font-style:italic;
+    }
+
     footer{
       margin-top:18px;
       border-top:3px double var(--ink);
@@ -471,6 +502,12 @@
         </svg>
       </a>
     </div>
+  </div>
+
+  <div class="print-cta">
+    <span>Deze editie bewaren?</span>
+    <button type="button" onclick="window.print()">Krant opslaan als PDF</button>
+    <span class="note">Werkt ook voor nieuwe edities: gebruik altijd de printknop om als PDF te bewaren.</span>
   </div>
 
   <footer>

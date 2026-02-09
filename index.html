@@ -52,8 +52,8 @@
     <h1 class="home-main-title">De Oostelijke Krant</h1>
     <div class="nav" id="main-nav">
       <a href="index.html">Home</a>
-      <a href="archive.html">Archief</a>
-      <a href="contact.html">Contact</a>
+      <a href="archive/">Archief</a>
+      <a href="contact/">Contact</a>
     </div>
     <div class="meta">
       <span class="tag">Regio: Oost</span>
@@ -63,7 +63,7 @@
 <div class="mobile-menu-backdrop" data-menu-close="1"></div>
 <aside class="mobile-menu-panel" aria-hidden="true">
   <div class="menu-head"><span class="menu-title">Menu</span><button class="menu-close" type="button" data-menu-close="1">Sluit</button></div>
-  <a href="index.html">Home</a><a href="archive.html">Archief</a><a href="contact.html">Contact</a>
+  <a href="index.html">Home</a><a href="archive/">Archief</a><a href="contact/">Contact</a>
 </aside>
 
 
@@ -83,8 +83,8 @@
       <h3>Van de redactie</h3>
       <p>De Oostelijke Krant brengt het verhaal van Oost: drama, politiek, bouwprojecten en community chaos.</p>
       <div class="pull"><b>Quote van de dag:</b> Het is of d(r)op, of deronder.</div>
-      <div class="card"><a href="archive.html"><b>Bekijk het archief →</b></a><br><span class="muted">Alle recente edities met datum en auteur.</span></div>
-      <div class="card"><a href="contact.html"><b>Tip insturen →</b></a><br><span class="muted">Zelf een topic geven? Stuur in de chat van JaymianLee op Twitch of stuur een DM op Instagram (@jaymianlee_).</span></div>
+      <div class="card"><a href="archive/"><b>Bekijk het archief →</b></a><br><span class="muted">Alle recente edities met datum en auteur.</span></div>
+      <div class="card"><a href="contact/"><b>Tip insturen →</b></a><br><span class="muted">Zelf een topic geven? Stuur in de chat van JaymianLee op Twitch of stuur een DM op Instagram (@jaymianlee_).</span></div>
     </aside>
   </div>
 
@@ -110,8 +110,8 @@ fetch('data/issues.json').then(r=>r.json()).then(items=>{
   const hero=document.getElementById('hero');
   const card=document.getElementById('latest-card');
   if(!latest){ hero.innerHTML='<h2>Nog geen editie</h2>'; card.textContent='Nog geen edities.'; return; }
-  hero.innerHTML=`<h2>${latest.title}</h2><div class="byline"><span><span class="badge">LAATSTE EDITIE</span> Redactie <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a></span><span>${latest.date} · ${latest.area}</span></div><p>${latest.summary}</p><p><a href="editions/${latest.slug}.html"><b>Lees volledige editie →</b></a></p>`;
-  card.innerHTML=`<a href="editions/${latest.slug}.html"><b>${latest.title}</b></a><p class="muted">Datum: ${latest.date} · Auteur: ${latest.author}</p><p>${latest.summary}</p><p><a href="editions/${latest.slug}.html"><b>Lees dit bericht →</b></a></p>`;
+  hero.innerHTML=`<h2>${latest.title}</h2><div class="byline"><span><span class="badge">LAATSTE EDITIE</span> Redactie <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a></span><span>${latest.date} · ${latest.area}</span></div><p>${latest.summary}</p><p><a href="editions/${latest.slug}/"><b>Lees volledige editie →</b></a></p>`;
+  card.innerHTML=`<a href="editions/${latest.slug}/"><b>${latest.title}</b></a><p class="muted">Datum: ${latest.date} · Auteur: ${latest.author}</p><p>${latest.summary}</p><p><a href="editions/${latest.slug}/"><b>Lees dit bericht →</b></a></p>`;
 });
 </script>
 

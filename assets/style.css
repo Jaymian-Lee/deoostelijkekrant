@@ -85,8 +85,10 @@ img{max-width:100%}
 }
 
 
-/* Keep meta tags side-by-side on mobile */
+/* Mobile meta labels: wrap netjes i.p.v. buiten scherm */
 @media (max-width:760px){
-  .meta{display:flex;flex-wrap:nowrap;justify-content:space-between;gap:8px}
-  .meta .tag{flex:1 1 0;text-align:center;padding:7px 10px;font-size:.76rem;letter-spacing:.04em;white-space:nowrap}
+  .meta{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:8px}
+  .meta .tag{flex:0 1 auto;text-align:center;padding:7px 10px;font-size:.76rem;letter-spacing:.04em;white-space:normal}
+  .meta.meta-home{flex-wrap:nowrap;justify-content:space-between}
+  .meta.meta-home .tag{flex:1 1 0;white-space:nowrap}
 }

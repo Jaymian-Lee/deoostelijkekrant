@@ -39,3 +39,7 @@ img{max-width:100%}
 
 .brand-title{display:flex;align-items:center;justify-content:center;gap:10px}
 .brand-icon{width:30px;height:30px;display:inline-block;vertical-align:middle}
+
+.site-logo-wrap{display:flex;justify-content:center;margin:6px 0 10px}
+.site-logo{max-width:min(560px,92%);height:auto;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.18))}
+.brand-title{display:none}

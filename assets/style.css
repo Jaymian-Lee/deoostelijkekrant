@@ -65,3 +65,21 @@ img{max-width:100%}
   .nav{display:none;width:100%;justify-content:flex-start}
   .nav.is-open{display:flex}
 }
+
+
+/* Professional mobile menu (glass drawer) */
+.mobile-menu-backdrop{display:none}
+.mobile-menu-panel{display:none}
+@media (max-width:760px){
+  .nav{display:none !important}
+  .mobile-nav-toggle{display:inline-block;margin:0 0 0 auto;order:1;border:1px solid rgba(0,0,0,.35);background:rgba(255,255,255,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:10px;padding:7px 12px;font-weight:600}
+  .mobile-menu-backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.32);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .2s ease;z-index:60}
+  .mobile-menu-panel{display:block;position:fixed;top:0;right:0;height:100dvh;width:min(78vw,320px);background:rgba(243,239,229,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-left:1px solid rgba(0,0,0,.16);box-shadow:-8px 0 28px rgba(0,0,0,.22);transform:translateX(100%);transition:transform .24s ease;z-index:61;padding:18px 14px}
+  .mobile-menu-panel .menu-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .mobile-menu-panel .menu-title{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .mobile-menu-panel .menu-close{border:1px solid rgba(0,0,0,.35);background:transparent;border-radius:8px;padding:4px 9px}
+  .mobile-menu-panel a{display:block;padding:10px 10px;margin:6px 0;border:1px solid rgba(0,0,0,.24);text-decoration:none;text-transform:uppercase;letter-spacing:.06em;background:rgba(255,255,255,.45)}
+  body.menu-open .mobile-menu-backdrop{opacity:1;pointer-events:auto}
+  body.menu-open .mobile-menu-panel{transform:translateX(0)}
+  body.menu-open{overflow:hidden}
+}

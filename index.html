@@ -44,6 +44,12 @@
       <span class="tag">Auteur: <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a></span>
     </div>
   </header>
+<div class="mobile-menu-backdrop" data-menu-close="1"></div>
+<aside class="mobile-menu-panel" aria-hidden="true">
+  <div class="menu-head"><span class="menu-title">Menu</span><button class="menu-close" type="button" data-menu-close="1">Sluit</button></div>
+  <a href="index.html">Home</a><a href="archive.html">Archief</a><a href="contact.html">Contact</a>
+</aside>
+
 
   <section class="hero" id="hero">Laden...</section>
 
@@ -93,15 +99,20 @@ fetch('data/issues.json').then(r=>r.json()).then(items=>{
 });
 </script>
 
+
+
 <script>
 (() => {
-  const toggle = document.querySelector('.mobile-nav-toggle');
-  const nav = document.querySelector('.nav');
-  if (!toggle || !nav) return;
-  toggle.addEventListener('click', () => {
-    const open = nav.classList.toggle('is-open');
-    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-  });
+  const btn = document.querySelector('.mobile-nav-toggle');
+  const panel = document.querySelector('.mobile-menu-panel');
+  if (!btn || !panel) return;
+  const setOpen = (open) => {
+    document.body.classList.toggle('menu-open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+  };
+  btn.addEventListener('click', () => setOpen(!document.body.classList.contains('menu-open')));
+  document.querySelectorAll('[data-menu-close="1"], .mobile-menu-panel a').forEach(el => el.addEventListener('click', () => setOpen(false)));
 })();
 </script>
 </body></html>

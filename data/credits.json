@@ -21,12 +21,33 @@
     }
   },
   {
+    "username": "ItzJis",
+    "displayName": "ItzJis",
+    "role": "Informatiecorrespondent",
+    "contribution": "Verzamelt en deelt informatie vanuit meetings en ontwikkelingen in Oost"
+  },
+  {
+    "username": "Jens072__",
+    "displayName": "Jens072__",
+    "role": "Informatieverstrekker",
+    "contribution": "Leverde informatie/verklaringen rondom de politieke situatie en uitslagen"
+  },
+  {
     "username": "MeneerSandwich",
     "displayName": "MeneerSandwich",
     "role": "Politiek correspondent & partijleider van DOP",
     "contribution": "Updates rondom DOP, partijontwikkelingen en rol als partijleider van DOP",
     "links": {
       "twitch": "https://m.twitch.tv/meneersandwich"
+    }
+  },
+  {
+    "username": "skoebidoemannen",
+    "displayName": "skoebidoemannen",
+    "role": "Bijdrager",
+    "contribution": "Hielp mee met het verkrijgen/aanleveren van een totem (Oost)",
+    "links": {
+      "tiktok": "https://www.tiktok.com/@soep1.official"
     }
   }
 ]

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Credits | De Oostelijke Krant</title>
+  <meta name="description" content="Credits van De Oostelijke Krant: wie hielp mee, met Minecraft gebruikersnamen en bijdragen.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://jaymian-lee.github.io/deoostelijkekrant/credits/">
+  <meta property="og:locale" content="nl_NL">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="De Oostelijke Krant">
+  <meta property="og:title" content="Credits | De Oostelijke Krant">
+  <meta property="og:description" content="Bekijk alle bijdragers van De Oostelijke Krant.">
+  <meta property="og:url" content="https://jaymian-lee.github.io/deoostelijkekrant/credits/">
+  <meta property="og:image" content="https://jaymian-lee.github.io/deoostelijkekrant/assets/logo-deoostelijkekrant.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Credits | De Oostelijke Krant">
+  <meta name="twitter:description" content="Bekijk alle bijdragers van De Oostelijke Krant.">
+  <meta name="twitter:image" content="https://jaymian-lee.github.io/deoostelijkekrant/assets/logo-deoostelijkekrant.png">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css"/>
+</head>
+<body>
+<main class="paper">
+  <header class="masthead">
+    <div class="masthead-top"><p class="kicker-left">Wie helpt mee aan de krant</p><a href="../" aria-label="Naar home"><img class="logo-top-right" src="../assets/logo-deoostelijkekrant.png" alt="De Oostelijke Krant logo"></a><button class="mobile-nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav">Menu</button></div>
+    <h1 class="home-main-title">Credits</h1>
+    <div class="nav" id="main-nav"><a href="../">Home</a><a href="../archive/">Archief</a><a href="../contact/">Contact</a><a href="../credits/">Credits</a></div>
+  </header>
+  <div class="mobile-menu-backdrop" data-menu-close="1"></div>
+  <aside class="mobile-menu-panel" aria-hidden="true">
+    <div class="menu-head"><span class="menu-title">Menu</span><button class="menu-close" type="button" data-menu-close="1">Sluit</button></div>
+    <a href="../">Home</a><a href="../archive/">Archief</a><a href="../contact/">Contact</a><a href="../credits/">Credits</a>
+  </aside>
+
+  <section class="section">
+    <h2>Bijdragers</h2>
+    <div id="credits-list" class="list">Laden...</div>
+  </section>
+
+  <footer>
+    <span>© De Oostelijke Krant — door <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a></span>
+    <span><a href="../credits/">Credits</a></span>
+  </footer>
+</main>
+
+<script>
+(() => {
+  const btn = document.querySelector('.mobile-nav-toggle');
+  const panel = document.querySelector('.mobile-menu-panel');
+  if (btn && panel) {
+    const setOpen = (open) => {
+      document.body.classList.toggle('menu-open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+    };
+    btn.addEventListener('click', () => setOpen(!document.body.classList.contains('menu-open')));
+    document.querySelectorAll('[data-menu-close="1"], .mobile-menu-panel a').forEach(el => el.addEventListener('click', () => setOpen(false)));
+  }
+})();
+
+fetch('../data/credits.json').then(r => r.json()).then(items => {
+  const list = document.getElementById('credits-list');
+  list.innerHTML = '';
+  items.forEach(it => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    const skinHead = `https://minotar.net/helm/${encodeURIComponent(it.username)}/64.png`;
+    card.innerHTML = `
+      <div style="display:flex;gap:12px;align-items:center;">
+        <img src="${skinHead}" alt="Minecraft skin head van ${it.displayName}" width="64" height="64" style="border:1px solid rgba(0,0,0,.25);background:#fff;image-rendering:pixelated;" loading="lazy">
+        <div>
+          <p style="margin:0 0 4px 0"><b>${it.displayName}</b> <span class="muted">(@${it.username})</span></p>
+          <p style="margin:0 0 4px 0" class="muted">${it.role || ''}</p>
+          <p style="margin:0">${it.contribution || ''}</p>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+  if (!items.length) list.textContent = 'Nog geen credits ingevuld.';
+});
+</script>
+</body>
+</html>

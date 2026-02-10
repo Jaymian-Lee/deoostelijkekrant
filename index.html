@@ -64,7 +64,7 @@
 <aside class="mobile-menu-panel" aria-hidden="true">
   <div class="menu-head"><span class="menu-title">Menu</span><button class="menu-close" type="button" data-menu-close="1">Sluit</button></div>
   <a href="index.html">Home</a><a href="archive/">Archief</a><a href="contact/">Contact</a>
-</aside>
+<a href="credits/">Credits</a></aside>
 
 
   <section class="hero" id="hero">Laden...</section>
@@ -73,6 +73,10 @@
     <section class="section">
       <h3>Laatste berichten uit de regio</h3>
       <div class="card" id="latest-card">Laden...</div>
+      <div class="card" id="hourly-highlight">
+        <b>Uitgelicht dit uur</b>
+        <p class="muted">Laden...</p>
+      </div>
       <div class="card">
         <b>Nieuwe editie laten maken?</b>
         <p class="muted">Stuur Dirk een korte opsomming (wat/waar/wie/quotes) en de krant wordt in dezelfde stijl bijgewerkt en online gezet.</p>
@@ -101,7 +105,7 @@
   <footer>
     <span>© De Oostelijke Krant — door <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a></span>
     <span>Laatste update: live uit Oost · Volgende editie: 10-02-2026 (verwacht)</span>
-  </footer>
+  <span><a href="credits/">Credits</a></span></footer>
 </main>
 
 <script>
@@ -130,5 +134,22 @@ fetch('data/issues.json').then(r=>r.json()).then(items=>{
   btn.addEventListener('click', () => setOpen(!document.body.classList.contains('menu-open')));
   document.querySelectorAll('[data-menu-close="1"], .mobile-menu-panel a').forEach(el => el.addEventListener('click', () => setOpen(false)));
 })();
+</script>
+
+<script>
+fetch('data/credits.json').then(r=>r.json()).then(items=>{
+  const box=document.getElementById('hourly-highlight');
+  if(!box || !items || !items.length) return;
+  const d=new Date();
+  const n=(((d.getFullYear()*366)+(d.getMonth()+1)*31+d.getDate())*24+d.getHours()) % items.length;
+  const it=items[n];
+  const skin='https://minotar.net/helm/'+encodeURIComponent(it.username)+'/64.png';
+  box.innerHTML='<b>Uitgelicht dit uur</b>'+
+    '<div style="display:flex;gap:10px;align-items:center;margin-top:8px">'+
+    '<img src="'+skin+'" width="48" height="48" alt="Skin van '+it.displayName+'" style="border:1px solid rgba(0,0,0,.25);image-rendering:pixelated;background:#fff" loading="lazy">'+
+    '<div><p style="margin:0"><b>'+it.displayName+'</b> <span class="muted">(@'+it.username+')</span></p>'+
+    '<p class="muted" style="margin:2px 0">'+(it.role||'Bijdrager')+'</p>'+
+    '<p style="margin:0">'+(it.contribution||'')+'</p></div></div>';
+}).catch(()=>{});
 </script>
 </body></html>

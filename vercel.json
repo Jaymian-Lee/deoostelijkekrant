@@ -1,0 +1,20 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        { "type": "host", "value": "deoostelijkekrant.nl" }
+      ],
+      "destination": "https://www.deoostelijkekrant.nl/$1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        { "type": "host", "value": "oostelijkekrant.nl" }
+      ],
+      "destination": "https://www.deoostelijkekrant.nl/$1",
+      "permanent": true
+    }
+  ]
+}

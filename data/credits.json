@@ -21,6 +21,17 @@
     }
   },
   {
+    "username": "MeneerSandwich",
+    "displayName": "MeneerSandwich",
+    "role": "Politiek correspondent & partijleider van DOP",
+    "contribution": "Updates rondom DOP, partijontwikkelingen en rol als partijleider van DOP",
+    "links": {
+      "twitch": "https://m.twitch.tv/meneersandwich",
+      "youtube": "https://www.youtube.com/@meneertjesandwich",
+      "tiktok": "https://www.tiktok.com/@meneersandwich"
+    }
+  },
+  {
     "username": "ItzJits",
     "displayName": "ItzJits",
     "role": "Informatiecorrespondent",
@@ -31,17 +42,6 @@
     "displayName": "Jens072__",
     "role": "Informatieverstrekker",
     "contribution": "Leverde informatie/verklaringen rondom de politieke situatie en uitslagen"
-  },
-  {
-    "username": "MeneerSandwich",
-    "displayName": "MeneerSandwich",
-    "role": "Politiek correspondent & partijleider van DOP",
-    "contribution": "Updates rondom DOP, partijontwikkelingen en rol als partijleider van DOP",
-    "links": {
-      "twitch": "https://m.twitch.tv/meneersandwich",
-      "youtube": "https://www.youtube.com/@meneertjesandwich",
-      "tiktok": "https://www.tiktok.com/@meneersandwich"
-    }
   },
   {
     "username": "skoebidoemannen",

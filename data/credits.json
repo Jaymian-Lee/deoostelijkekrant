@@ -12,6 +12,12 @@
     }
   },
   {
+    "username": "Kurbey",
+    "displayName": "Kurbey",
+    "role": "Logo designer",
+    "contribution": "Heeft het logo van De Oostelijke Krant gemaakt"
+  },
+  {
     "username": "MeneerSandwich",
     "displayName": "MeneerSandwich",
     "role": "Politiek correspondent",
@@ -19,11 +25,5 @@
     "links": {
       "twitch": "https://m.twitch.tv/meneersandwich"
     }
-  },
-  {
-    "username": "Kurbey",
-    "displayName": "Kurbey",
-    "role": "Logo designer",
-    "contribution": "Heeft het logo van De Oostelijke Krant gemaakt"
   }
 ]

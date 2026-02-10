@@ -74,13 +74,15 @@ fetch('../data/credits.json').then(r => r.json()).then(items => {
     const card = document.createElement('div');
     card.className = 'card';
     const skinHead = `https://minotar.net/helm/${encodeURIComponent(it.username)}/64.png`;
+    const links = it.links ? Object.entries(it.links).map(([k,v]) => `<a href="${v}" target="_blank" rel="noopener">${k}</a>`).join(' · ') : '';
     card.innerHTML = `
       <div style="display:flex;gap:12px;align-items:center;">
         <img src="${skinHead}" alt="Minecraft skin head van ${it.displayName}" width="64" height="64" style="border:1px solid rgba(0,0,0,.25);background:#fff;image-rendering:pixelated;" loading="lazy">
         <div>
           <p style="margin:0 0 4px 0"><b>${it.displayName}</b> <span class="muted">(@${it.username})</span></p>
           <p style="margin:0 0 4px 0" class="muted">${it.role || ''}</p>
-          <p style="margin:0">${it.contribution || ''}</p>
+          <p style="margin:0 0 4px 0">${it.contribution || ''}</p>
+          ${links ? `<p style="margin:0" class="muted">Socials: ${links}</p>` : ''}
         </div>
       </div>`;
     list.appendChild(card);

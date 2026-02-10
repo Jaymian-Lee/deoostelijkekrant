@@ -25,4 +25,9 @@
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
+  <url>
+    <loc>https://jaymian-lee.github.io/deoostelijkekrant/editions/2026-02-10-editie-2/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
 </urlset>

@@ -8,5 +8,15 @@
     "area": "Oost",
     "summary": "Trapdrama, offer-geruchten en politieke oprichting van DOP zetten Oost op scherp. Quote van de avond: Het is of d(r)op, of deronder.",
     "coverImage": "assets/deoostelijkekrant.png"
+  },
+  {
+    "id": "editie-2",
+    "title": "The Eastern Massacre — Oost zoekt orde",
+    "slug": "2026-02-10-editie-2",
+    "date": "2026-02-10",
+    "author": "JaymianLee",
+    "area": "Oost",
+    "summary": "Partijmeeting, verkiezingsuitslag (DOP wint) en een reeks incidenten die Oost op scherp zetten.",
+    "coverImage": "assets/2026-02-10-memorial.jpg"
   }
 ]

@@ -15,7 +15,10 @@
     "username": "MeneerSandwich",
     "displayName": "MeneerSandwich",
     "role": "Politiek correspondent",
-    "contribution": "Updates rondom DOP en partijontwikkelingen"
+    "contribution": "Updates rondom DOP en partijontwikkelingen",
+    "links": {
+      "twitch": "https://m.twitch.tv/meneersandwich"
+    }
   },
   {
     "username": "Kurbey",

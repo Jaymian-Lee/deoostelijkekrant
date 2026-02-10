@@ -1,0 +1,8 @@
+# NOTE: .htaccess is only used on Apache. Vercel ignores this file.
+# Canonical host redirect: non-www -> www
+RewriteEngine On
+
+# Redirect oostelijkekrant.nl -> www.deoostelijkekrant.nl
+RewriteCond %{HTTP_HOST} ^oostelijkekrant\.nl$ [NC,OR]
+RewriteCond %{HTTP_HOST} ^deoostelijkekrant\.nl$ [NC]
+RewriteRule ^(.*)$ https://www.deoostelijkekrant.nl/$1 [R=301,L]

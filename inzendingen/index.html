@@ -40,14 +40,14 @@
     <p>Mail je tip naar <b><a href="mailto:inzending@deoostelijkekrant.nl">inzending@deoostelijkekrant.nl</a></b> of <b><a href="mailto:inzending@deoostelijkekrant.nl">inzending@deoostelijkekrant.nl</a></b>.</p>
     <p><b>Of gebruik direct het formulier:</b></p>
 
-    <form action="https://formsubmit.co/inzending@deoostelijkekrant.nl" method="POST" style="display:grid;gap:10px;margin-top:10px">
+    <form id="inzending-form" action="https://formsubmit.co/inzending@deoostelijkekrant.nl" method="POST" style="display:grid;gap:10px;margin-top:10px">
       <input type="hidden" name="_subject" value="Nieuwe inzending - De Oostelijke Krant">
       <input type="hidden" name="_captcha" value="true">
       <input type="hidden" name="_template" value="table">
       <input type="hidden" name="_next" value="https://www.deoostelijkekrant.nl/inzendingen/?verzonden=1">
       <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
 
-      <label>Minecraft naam (verplicht, exact met hoofdletters)<br><input required name="minecraft_naam" maxlength="32" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></label>
+      <label>Minecraft naam (verplicht, exact met hoofdletters)<br><input id="minecraft_naam" required name="minecraft_naam" maxlength="32" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></label>
       <label>Onderwerp (verplicht)<br><input required name="onderwerp" maxlength="120" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></label>
       <label>Datum van inzending (verplicht)<br><input required type="date" id="inzend_datum" name="datum_inzending" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></label>
       <label>Wanneer (verplicht)<br><input required name="wanneer" maxlength="120" placeholder="Bijv. 12-02-2026 rond 21:00" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></label>
@@ -74,6 +74,7 @@
     </ul>
     <p class="warn"><b>Let op:</b> Dit veld is bedoeld voor <b>serieuze inzendingen</b>. Onserieuze of niet-feitelijke inzendingen komen niet online en worden niet gebruikt in een nieuwe editie van de krant.</p>
     <p class="muted">Vermeld je Minecraft-naam volledig correct, inclusief hoofdletters. Bij publicatie met naam kun je in de credits worden vermeld.</p>
+    <p class="muted"><b>Teamregel:</b> tot en met 19-02-2026 kunnen alleen spelers uit <b>team OOST</b> inzenden. Vanaf 20-02-2026 worden inzendingen van andere teams ook toegestaan.</p>
   </div>
 </section>
 
@@ -104,6 +105,77 @@ if(d && !d.value){
   d.value=`${y}-${m}-${day}`;
 }
 
+
+
+const form=document.getElementById('inzending-form');
+const mcInput=document.getElementById('minecraft_naam');
+
+function norm(v){ return (v||'').trim(); }
+function lower(v){ return norm(v).toLowerCase(); }
+function levenshtein(a,b){
+  a=lower(a); b=lower(b);
+  const dp=Array.from({length:a.length+1},()=>Array(b.length+1).fill(0));
+  for(let i=0;i<=a.length;i++) dp[i][0]=i;
+  for(let j=0;j<=b.length;j++) dp[0][j]=j;
+  for(let i=1;i<=a.length;i++) for(let j=1;j<=b.length;j++){
+    const cost=a[i-1]===b[j-1]?0:1;
+    dp[i][j]=Math.min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+cost);
+  }
+  return dp[a.length][b.length];
+}
+
+function findBestMatch(input, names){
+  const x=norm(input);
+  if(!x) return null;
+  let exact=names.find(n=>n===x);
+  if(exact) return {name:exact,score:0};
+  let ci=names.find(n=>lower(n)===lower(x));
+  if(ci) return {name:ci,score:0};
+  let best=null;
+  for(const n of names){
+    const d=levenshtein(x,n);
+    if(best===null || d<best.score) best={name:n,score:d};
+  }
+  if(best && best.score<=2) return best;
+  return null;
+}
+
+async function attachNameRules(){
+  if(!form || !mcInput) return;
+  try{
+    const res=await fetch('../data/ncsmp-players.json');
+    const data=await res.json();
+    const oost=(data.teams && data.teams.oost) ? data.teams.oost : [];
+    const all=data.allPlayersSorted || oost;
+    const unlockDate=new Date((data.unlockAllTeamsFrom || '2026-02-20')+'T00:00:00');
+
+    form.addEventListener('submit', (e)=>{
+      const now=new Date();
+      const allowAll = now >= unlockDate;
+      const setNames = allowAll ? all : oost;
+      const raw = norm(mcInput.value);
+      const match = findBestMatch(raw, setNames);
+
+      if(!match){
+        e.preventDefault();
+        const msg = allowAll
+          ? 'Je gebruikersnaam staat niet in de deelnemerslijst. Weet je zeker dat je je naam juist hebt ingevuld, denk aan hoofdletters, speciale tekens en cijfers.'
+          : 'Je hoort helaas niet bij team OOST en mag daarom geen tips sturen. Dit zal later komen na de val van de muur. Weet je zeker dat je je naam juist hebt ingevuld, denk aan hoofdletters, speciale tekens en cijfers.';
+        mcInput.setCustomValidity(msg);
+        mcInput.reportValidity();
+        return;
+      }
+
+      if(match.name !== raw){
+        mcInput.value = match.name;
+      }
+      mcInput.setCustomValidity('');
+    });
+
+    mcInput.addEventListener('input', ()=>mcInput.setCustomValidity(''));
+  }catch(_){ }
+}
+attachNameRules();
 
 fetch('../data/inzendingen.json').then(r=>r.json()).then(items=>{
   const box=document.getElementById('inzendingen-list');

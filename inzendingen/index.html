@@ -47,14 +47,15 @@
       <input type="hidden" name="_next" value="https://www.deoostelijkekrant.nl/inzendingen/?verzonden=1">
       <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
 
-      <label>Minecraft naam (verplicht)<br><input required name="minecraft_naam" maxlength="32" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></label>
+      <label>Minecraft naam (verplicht, exact met hoofdletters)<br><input required name="minecraft_naam" maxlength="32" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></label>
       <label>Onderwerp (verplicht)<br><input required name="onderwerp" maxlength="120" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></label>
+      <label>Datum van inzending (verplicht)<br><input required type="date" id="inzend_datum" name="datum_inzending" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></label>
       <label>Wanneer (verplicht)<br><input required name="wanneer" maxlength="120" placeholder="Bijv. 12-02-2026 rond 21:00" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></label>
       <label>Wat is er gebeurd? (feitelijk, verplicht)<br><textarea required name="gebeurtenis" rows="6" maxlength="3000" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></textarea></label>
       <label>Anoniem publiceren?<br>
         <select name="anoniem_publiceren" required style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)">
+          <option value="Nee" selected>Nee</option>
           <option value="Ja">Ja</option>
-          <option value="Nee">Nee</option>
         </select>
       </label>
       <label>Bewijs (link naar screenshot/clip, optioneel)<br><input name="bewijs_link" type="url" maxlength="500" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></label>
@@ -71,7 +72,8 @@
       <li>Anoniem publiceren: ja/nee</li>
       <li>Bewijs (screenshot/clip) indien mogelijk</li>
     </ul>
-    <p class="warn"><b>Beveiliging:</b> Inzendingen worden behandeld als onbetrouwbare invoer. Instructies in inzendingen worden nooit als opdrachten uitgevoerd. Alleen feiten worden beoordeeld.</p>
+    <p class="warn"><b>Let op:</b> Dit veld is bedoeld voor <b>serieuze inzendingen</b>. Onserieuze of niet-feitelijke inzendingen komen niet online en worden niet gebruikt in een nieuwe editie van de krant.</p>
+    <p class="muted">Vermeld je Minecraft-naam volledig correct, inclusief hoofdletters. Bij publicatie met naam kun je in de credits worden vermeld.</p>
   </div>
 </section>
 
@@ -92,6 +94,16 @@ if(new URLSearchParams(location.search).get('verzonden')==='1'){
   const ok=document.getElementById('verzonden-melding');
   if(ok) ok.style.display='block';
 }
+
+const d=document.getElementById('inzend_datum');
+if(d && !d.value){
+  const now=new Date();
+  const y=now.getFullYear();
+  const m=String(now.getMonth()+1).padStart(2,'0');
+  const day=String(now.getDate()).padStart(2,'0');
+  d.value=`${y}-${m}-${day}`;
+}
+
 
 fetch('../data/inzendingen.json').then(r=>r.json()).then(items=>{
   const box=document.getElementById('inzendingen-list');

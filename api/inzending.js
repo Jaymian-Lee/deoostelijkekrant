@@ -65,7 +65,7 @@ export default async function handler(req, res) {
 
   const form = await readBody(req);
   const honey = norm(form.get('_honey'));
-  if (honey) return res.status(200).redirect('/inzendingen/?verzonden=1');
+  if (honey) return res.redirect(303, '/inzendingen/?verzonden=1');
 
   const minecraftNaamRaw = norm(form.get('minecraft_naam'));
   const onderwerp = norm(form.get('onderwerp'));
@@ -129,7 +129,7 @@ export default async function handler(req, res) {
 
   try {
     await transporter.sendMail({ from, to, subject, text, replyTo: from });
-    return res.status(302).setHeader('Location', '/inzendingen/?verzonden=1').end();
+    return res.redirect(303, '/inzendingen/?verzonden=1');
   } catch {
     return res.status(500).send('Verzenden mislukt, probeer later opnieuw.');
   }

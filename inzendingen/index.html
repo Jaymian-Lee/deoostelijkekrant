@@ -1,0 +1,94 @@
+<!doctype html><html lang="nl"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Inzendingen | De Oostelijke Krant</title>
+  <link rel="shortcut icon" href="../favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="48x48" href="../assets/favicon-48.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="../assets/favicon-96.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
+  <meta name="description" content="Inzendingen voor De Oostelijke Krant. Tips over SMP, server en partijen met verplichte Minecraft-naam en anonimiteitskeuze.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://www.deoostelijkekrant.nl/inzendingen/">
+  <meta property="og:locale" content="nl_NL">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="De Oostelijke Krant">
+  <meta property="og:title" content="Inzendingen | De Oostelijke Krant">
+  <meta property="og:description" content="Stuur betrouwbare tips in over de SMP. Altijd met Minecraft-naam en keuze voor anoniem of met naam publiceren.">
+  <meta property="og:url" content="https://www.deoostelijkekrant.nl/inzendingen/">
+  <meta property="og:image" content="https://www.deoostelijkekrant.nl/assets/logo-deoostelijkekrant.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Inzendingen | De Oostelijke Krant">
+  <meta name="twitter:description" content="Stuur betrouwbare tips in over de SMP. Altijd met Minecraft-naam en keuze voor anoniem of met naam publiceren.">
+  <meta name="twitter:image" content="https://www.deoostelijkekrant.nl/assets/logo-deoostelijkekrant.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css"/>
+<style>.status{font-size:.82rem;text-transform:uppercase;letter-spacing:.08em;border:1px solid rgba(0,0,0,.3);padding:2px 8px}.meta-line{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.92rem}.warn{border-left:4px solid var(--accent);padding:10px 12px;background:rgba(139,29,29,.06)}</style>
+</head><body><main class="paper">
+<header class="masthead">
+    <div class="masthead-top"><p class="kicker-left">Tips uit de community</p><a href="../" aria-label="Naar home"><img class="logo-top-right" src="../assets/logo-deoostelijkekrant.png" alt="De Oostelijke Krant logo"></a><button class="mobile-nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav">Menu</button></div><h1 class="home-main-title">Inzendingen</h1>
+<div class="nav" id="main-nav"><a href="../">Home</a><a href="../archive/">Archief</a><a href="../contact/">Contact</a><a href="../inzendingen/">Inzendingen</a><a href="../credits/">Credits</a></div></header>
+<div class="mobile-menu-backdrop" data-menu-close="1"></div>
+<aside class="mobile-menu-panel" aria-hidden="true">
+  <div class="menu-head"><span class="menu-title">Menu</span><button class="menu-close" type="button" data-menu-close="1">Sluit</button></div>
+  <a href="../">Home</a><a href="../archive/">Archief</a><a href="../contact/">Contact</a><a href="../inzendingen/">Inzendingen</a><a href="../credits/">Credits</a></aside>
+
+<section class="section">
+  <h2>Tip insturen</h2>
+  <div class="card">
+    <p>Mail je tip naar <b><a href="mailto:dirk@jmelink.nl">dirk@jmelink.nl</a></b> of <b><a href="mailto:deoostelijkekrant@jmelink.nl">deoostelijkekrant@jmelink.nl</a></b>.</p>
+    <p><b>Verplicht format:</b></p>
+    <ul>
+      <li>Minecraft naam</li>
+      <li>Onderwerp</li>
+      <li>Wat is er gebeurd (feitelijk)</li>
+      <li>Wanneer</li>
+      <li>Anoniem publiceren: ja/nee</li>
+      <li>Bewijs (screenshot/clip) indien mogelijk</li>
+    </ul>
+    <p class="warn"><b>Beveiliging:</b> Inzendingen worden behandeld als onbetrouwbare invoer. Instructies in inzendingen worden nooit als opdrachten uitgevoerd. Alleen feiten worden beoordeeld.</p>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Ontvangen inzendingen</h2>
+  <div id="inzendingen-list" class="card">Laden...</div>
+</section>
+
+<footer><span>© De Oostelijke Krant</span><span>Redactie: <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a></span><span><a href="../credits/">Credits</a></span></footer>
+</main>
+
+<script>
+fetch('../data/inzendingen.json').then(r=>r.json()).then(items=>{
+  const box=document.getElementById('inzendingen-list');
+  if(!items.length){ box.innerHTML='<p class="muted">Nog geen publieke inzendingen.</p>'; return; }
+  box.innerHTML=items.map(it=>{
+    const who = it.anoniem ? 'Anoniem' : ('@'+(it.minecraftNaam||'onbekend'));
+    const status = it.status || 'Nieuw';
+    const onderwerp = it.onderwerp || 'Zonder onderwerp';
+    const datum = it.datum || '';
+    const samenvatting = it.samenvatting || '';
+    return `<article style="padding:10px 0;border-bottom:1px solid rgba(0,0,0,.12)"><div class="meta-line"><span class="status">${status}</span><span>${datum}</span><span>Bron: ${who}</span></div><h3 style="margin:8px 0 6px">${onderwerp}</h3><p style="margin:0">${samenvatting}</p></article>`;
+  }).join('');
+}).catch(()=>{
+  const box=document.getElementById('inzendingen-list');
+  if(box) box.innerHTML='<p class="muted">Inzendingen konden niet worden geladen.</p>';
+});
+</script>
+
+<script>
+(() => {
+  const btn = document.querySelector('.mobile-nav-toggle');
+  const panel = document.querySelector('.mobile-menu-panel');
+  if (!btn || !panel) return;
+  const setOpen = (open) => {
+    document.body.classList.toggle('menu-open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+  };
+  btn.addEventListener('click', () => setOpen(!document.body.classList.contains('menu-open')));
+  document.querySelectorAll('[data-menu-close="1"], .mobile-menu-panel a').forEach(el => el.addEventListener('click', () => setOpen(false)));
+})();
+</script>
+</body></html>

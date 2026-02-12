@@ -40,11 +40,8 @@
     <p>Mail je tip naar <b><a href="mailto:inzending@deoostelijkekrant.nl">inzending@deoostelijkekrant.nl</a></b> of <b><a href="mailto:inzending@deoostelijkekrant.nl">inzending@deoostelijkekrant.nl</a></b>.</p>
     <p><b>Of gebruik direct het formulier:</b></p>
 
-    <form id="inzending-form" action="https://formsubmit.co/inzending@deoostelijkekrant.nl" method="POST" style="display:grid;gap:10px;margin-top:10px">
-      <input type="hidden" name="_subject" value="Nieuwe inzending - De Oostelijke Krant">
-      <input type="hidden" name="_captcha" value="true">
-      <input type="hidden" name="_template" value="table">
-      <input type="hidden" name="_next" value="https://www.deoostelijkekrant.nl/inzendingen/?verzonden=1">
+    <form id="inzending-form" action="/api/inzending" method="POST" style="display:grid;gap:10px;margin-top:10px">
+      <input type="hidden" name="_next" value="/inzendingen/?verzonden=1"
       <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
 
       <label>Minecraft naam (verplicht, exact met hoofdletters)<br><input id="minecraft_naam" required name="minecraft_naam" maxlength="32" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></label>

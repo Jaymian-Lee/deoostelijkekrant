@@ -80,17 +80,27 @@
   <div id="inzendingen-list" class="card">Laden...</div>
 </section>
 
-<section class="section" id="verzonden-melding" style="display:none">
-  <div class="card"><b>Bedankt, je inzending is ontvangen.</b><p class="muted">We beoordelen je tip eerst op betrouwbaarheid en relevantie.</p></div>
-</section>
+<div id="verzonden-popup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;padding:16px">
+  <div class="card" style="max-width:620px;width:100%;position:relative">
+    <button id="verzonden-close" type="button" style="position:absolute;right:10px;top:10px;border:1px solid rgba(0,0,0,.3);background:#fff;padding:4px 8px;cursor:pointer">Sluit</button>
+    <h3 style="margin-top:0">Inzending ontvangen</h3>
+    <p><b>De redacteur van De Oostelijke Krant, <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a>, bedankt je voor je inzending.</b></p>
+    <p>We zullen het zo snel mogelijk doornemen en er gebruik van maken in de komende editie.</p>
+  </div>
+</div>
 
 <footer><span>© De Oostelijke Krant</span><span>Redactie: <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a></span><span><a href="../credits/">Credits</a></span></footer>
 </main>
 
 <script>
 if(new URLSearchParams(location.search).get('verzonden')==='1'){
-  const ok=document.getElementById('verzonden-melding');
-  if(ok) ok.style.display='block';
+  const pop=document.getElementById('verzonden-popup');
+  if(pop){
+    pop.style.display='flex';
+    const close=document.getElementById('verzonden-close');
+    if(close) close.addEventListener('click', ()=> pop.style.display='none');
+    pop.addEventListener('click', (e)=>{ if(e.target===pop) pop.style.display='none'; });
+  }
 }
 
 const d=document.getElementById('inzend_datum');

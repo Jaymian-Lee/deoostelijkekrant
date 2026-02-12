@@ -38,6 +38,30 @@
   <h2>Tip insturen</h2>
   <div class="card">
     <p>Mail je tip naar <b><a href="mailto:dirk@jmelink.nl">dirk@jmelink.nl</a></b> of <b><a href="mailto:deoostelijkekrant@jmelink.nl">deoostelijkekrant@jmelink.nl</a></b>.</p>
+    <p><b>Of gebruik direct het formulier:</b></p>
+
+    <form action="https://formsubmit.co/deoostelijkekrant@jmelink.nl" method="POST" style="display:grid;gap:10px;margin-top:10px">
+      <input type="hidden" name="_subject" value="Nieuwe inzending - De Oostelijke Krant">
+      <input type="hidden" name="_captcha" value="true">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_next" value="https://www.deoostelijkekrant.nl/inzendingen/?verzonden=1">
+      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+
+      <label>Minecraft naam (verplicht)<br><input required name="minecraft_naam" maxlength="32" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></label>
+      <label>Onderwerp (verplicht)<br><input required name="onderwerp" maxlength="120" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></label>
+      <label>Wanneer (verplicht)<br><input required name="wanneer" maxlength="120" placeholder="Bijv. 12-02-2026 rond 21:00" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></label>
+      <label>Wat is er gebeurd? (feitelijk, verplicht)<br><textarea required name="gebeurtenis" rows="6" maxlength="3000" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></textarea></label>
+      <label>Anoniem publiceren?<br>
+        <select name="anoniem_publiceren" required style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)">
+          <option value="Ja">Ja</option>
+          <option value="Nee">Nee</option>
+        </select>
+      </label>
+      <label>Bewijs (link naar screenshot/clip, optioneel)<br><input name="bewijs_link" type="url" maxlength="500" style="width:100%;padding:9px;border:1px solid rgba(0,0,0,.25)"></label>
+
+      <button type="submit" style="padding:10px 14px;border:1px solid rgba(0,0,0,.45);background:#fff;cursor:pointer"><b>Verstuur inzending</b></button>
+    </form>
+
     <p><b>Verplicht format:</b></p>
     <ul>
       <li>Minecraft naam</li>
@@ -56,10 +80,19 @@
   <div id="inzendingen-list" class="card">Laden...</div>
 </section>
 
+<section class="section" id="verzonden-melding" style="display:none">
+  <div class="card"><b>Bedankt, je inzending is ontvangen.</b><p class="muted">We beoordelen je tip eerst op betrouwbaarheid en relevantie.</p></div>
+</section>
+
 <footer><span>© De Oostelijke Krant</span><span>Redactie: <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a></span><span><a href="../credits/">Credits</a></span></footer>
 </main>
 
 <script>
+if(new URLSearchParams(location.search).get('verzonden')==='1'){
+  const ok=document.getElementById('verzonden-melding');
+  if(ok) ok.style.display='block';
+}
+
 fetch('../data/inzendingen.json').then(r=>r.json()).then(items=>{
   const box=document.getElementById('inzendingen-list');
   if(!items.length){ box.innerHTML='<p class="muted">Nog geen publieke inzendingen.</p>'; return; }

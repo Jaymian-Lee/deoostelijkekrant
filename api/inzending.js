@@ -2,7 +2,8 @@ import nodemailer from 'nodemailer';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const DATA_PATH = path.join(process.cwd(), 'data', 'ncsmp-players.json');
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const DATA_PATH = path.resolve(__dirname, '../data/ncsmp-players.json');
 
 function loadPlayers() {
   try {
@@ -51,13 +52,30 @@ function bestMatch(input, names) {
 }
 
 async function readBody(req) {
-  if (typeof req.body === 'string') {
-    return new URLSearchParams(req.body);
+  if (typeof req.body === 'string') return new URLSearchParams(req.body);
+  if (req.body && typeof req.body === 'object') return new URLSearchParams(Object.entries(req.body));
+
+  const chunks = [];
+  await new Promise((resolve, reject) => {
+    req.on('data', (c) => chunks.push(c));
+    req.on('end', resolve);
+    req.on('error', reject);
+  });
+
+  const raw = Buffer.concat(chunks).toString('utf8');
+  if (!raw) return new URLSearchParams();
+
+  const contentType = String(req.headers['content-type'] || '').toLowerCase();
+  if (contentType.includes('application/json')) {
+    try {
+      const obj = JSON.parse(raw);
+      return new URLSearchParams(Object.entries(obj || {}));
+    } catch {
+      return new URLSearchParams();
+    }
   }
-  if (req.body && typeof req.body === 'object') {
-    return new URLSearchParams(Object.entries(req.body));
-  }
-  return new URLSearchParams();
+
+  return new URLSearchParams(raw);
 }
 
 export default async function handler(req, res) {
@@ -86,6 +104,11 @@ export default async function handler(req, res) {
   const { oost, all, unlockDate } = loadPlayers();
   const allowAll = new Date() >= new Date(`${unlockDate}T00:00:00`);
   const allowed = allowAll ? all : oost;
+
+  if (!Array.isArray(allowed) || allowed.length === 0) {
+    return res.status(503).send('Validatielijst tijdelijk niet beschikbaar, probeer later opnieuw.');
+  }
+
   const match = bestMatch(minecraftNaamRaw, allowed);
 
   if (!match) {

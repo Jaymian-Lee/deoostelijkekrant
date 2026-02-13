@@ -59,114 +59,95 @@ function bestMatch(input, names) {
 async function readBody(req) {
   if (typeof req.body === 'string') return new URLSearchParams(req.body);
   if (req.body && typeof req.body === 'object') return new URLSearchParams(Object.entries(req.body));
-
-  if (typeof req.on !== 'function') return new URLSearchParams();
-
-  const chunks = [];
-  await new Promise((resolve, reject) => {
-    req.on('data', (c) => chunks.push(c));
-    req.on('end', resolve);
-    req.on('error', reject);
-  });
-
-  const raw = Buffer.concat(chunks).toString('utf8');
-  if (!raw) return new URLSearchParams();
-
-  const contentType = String(req.headers['content-type'] || '').toLowerCase();
-  if (contentType.includes('application/json')) {
-    try {
-      const obj = JSON.parse(raw);
-      return new URLSearchParams(Object.entries(obj || {}));
-    } catch {
-      return new URLSearchParams();
-    }
-  }
-
-  return new URLSearchParams(raw);
+  return new URLSearchParams();
 }
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).send('Method Not Allowed');
-
-  const form = await readBody(req);
-  const honey = norm(form.get('_honey'));
-  if (honey) {
-    res.statusCode = 303;
-    res.setHeader('Location', '/inzendingen/?verzonden=1');
-    return res.end();
-  }
-
-  const minecraftNaamRaw = norm(form.get('minecraft_naam'));
-  const onderwerp = norm(form.get('onderwerp'));
-  const datumInzending = norm(form.get('datum_inzending'));
-  const wanneer = norm(form.get('wanneer'));
-  const gebeurtenis = norm(form.get('gebeurtenis'));
-  const anoniem = norm(form.get('anoniem_publiceren')) || 'Nee';
-  const bewijs = norm(form.get('bewijs_link'));
-
-  if (!minecraftNaamRaw || !onderwerp || !datumInzending || !wanneer || !gebeurtenis) {
-    return res.status(400).send('Verplichte velden ontbreken.');
-  }
-
-  const { oost, all, unlockDate } = loadPlayers();
-  const allowAll = new Date() >= new Date(`${unlockDate}T00:00:00`);
-  const allowed = allowAll ? all : oost;
-
-  if (!Array.isArray(allowed) || allowed.length === 0) {
-    return res.status(503).send('Validatielijst tijdelijk niet beschikbaar, probeer later opnieuw.');
-  }
-
-  const match = bestMatch(minecraftNaamRaw, allowed);
-
-  if (!match) {
-    const msg = allowAll
-      ? 'Je gebruikersnaam staat niet in de deelnemerslijst. Weet je zeker dat je je naam juist hebt ingevuld, denk aan hoofdletters, speciale tekens en cijfers.'
-      : 'Je hoort helaas niet bij team OOST en mag daarom geen tips sturen. Dit zal later komen na de val van de muur. Weet je zeker dat je je naam juist hebt ingevuld, denk aan hoofdletters, speciale tekens en cijfers.';
-    return res.status(403).send(msg);
-  }
-
-  const minecraftNaam = match.name;
-
-  const host = process.env.KRANT_SMTP_HOST || 'mail.deoostelijkekrant.nl';
-  const port = Number(process.env.KRANT_SMTP_PORT || 587);
-  const user = process.env.KRANT_SMTP_USER;
-  const pass = process.env.KRANT_SMTP_PASS;
-  const to = process.env.KRANT_INZENDING_TO || 'inzending@deoostelijkekrant.nl';
-  const from = process.env.KRANT_INZENDING_FROM || user || 'inzending@deoostelijkekrant.nl';
-
-  if (!user || !pass) {
-    return res.status(500).send('SMTP is nog niet geconfigureerd.');
-  }
-
-  const transporter = nodemailer.createTransport({
-    host,
-    port,
-    secure: false,
-    auth: { user, pass },
-    tls: { minVersion: 'TLSv1.2' },
-  });
-
-  const subject = `[Inzending] ${onderwerp} (${minecraftNaam})`;
-  const text = [
-    'Nieuwe inzending via website',
-    '',
-    `Minecraft naam: ${minecraftNaam}`,
-    `Onderwerp: ${onderwerp}`,
-    `Datum inzending: ${datumInzending}`,
-    `Wanneer gebeurd: ${wanneer}`,
-    `Anoniem publiceren: ${anoniem}`,
-    bewijs ? `Bewijs link: ${bewijs}` : 'Bewijs link: (geen)',
-    '',
-    'Gebeurtenis:',
-    gebeurtenis,
-  ].join('\n');
-
   try {
-    await transporter.sendMail({ from, to, subject, text, replyTo: from });
-    res.statusCode = 303;
-    res.setHeader('Location', '/inzendingen/?verzonden=1');
-    return res.end();
-  } catch {
-    return res.status(500).send('Verzenden mislukt, probeer later opnieuw.');
+    if (req.method !== 'POST') return res.status(405).send('Method Not Allowed');
+
+    const form = await readBody(req);
+    const honey = norm(form.get('_honey'));
+    if (honey) {
+      res.statusCode = 303;
+      res.setHeader('Location', '/inzendingen/?verzonden=1');
+      return res.end();
+    }
+
+    const minecraftNaamRaw = norm(form.get('minecraft_naam'));
+    const onderwerp = norm(form.get('onderwerp'));
+    const datumInzending = norm(form.get('datum_inzending'));
+    const wanneer = norm(form.get('wanneer'));
+    const gebeurtenis = norm(form.get('gebeurtenis'));
+    const anoniem = norm(form.get('anoniem_publiceren')) || 'Nee';
+    const bewijs = norm(form.get('bewijs_link'));
+
+    if (!minecraftNaamRaw || !onderwerp || !datumInzending || !wanneer || !gebeurtenis) {
+      return res.status(400).send('Verplichte velden ontbreken.');
+    }
+
+    const { oost, all, unlockDate } = loadPlayers();
+    const allowAll = new Date() >= new Date(`${unlockDate}T00:00:00`);
+    const allowed = allowAll ? all : oost;
+
+    if (!Array.isArray(allowed) || allowed.length === 0) {
+      return res.status(503).send('Validatielijst tijdelijk niet beschikbaar, probeer later opnieuw.');
+    }
+
+    const match = bestMatch(minecraftNaamRaw, allowed);
+
+    if (!match) {
+      const msg = allowAll
+        ? 'Je gebruikersnaam staat niet in de deelnemerslijst. Weet je zeker dat je je naam juist hebt ingevuld, denk aan hoofdletters, speciale tekens en cijfers.'
+        : 'Je hoort helaas niet bij team OOST en mag daarom geen tips sturen. Dit zal later komen na de val van de muur. Weet je zeker dat je je naam juist hebt ingevuld, denk aan hoofdletters, speciale tekens en cijfers.';
+      return res.status(403).send(msg);
+    }
+
+    const minecraftNaam = match.name;
+
+    const host = process.env.KRANT_SMTP_HOST || 'mail.deoostelijkekrant.nl';
+    const port = Number(process.env.KRANT_SMTP_PORT || 587);
+    const user = process.env.KRANT_SMTP_USER;
+    const pass = process.env.KRANT_SMTP_PASS;
+    const to = process.env.KRANT_INZENDING_TO || 'inzending@deoostelijkekrant.nl';
+    const from = process.env.KRANT_INZENDING_FROM || user || 'inzending@deoostelijkekrant.nl';
+
+    if (!user || !pass) {
+      return res.status(500).send('SMTP is nog niet geconfigureerd.');
+    }
+
+    const transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure: false,
+      auth: { user, pass },
+      tls: { minVersion: 'TLSv1.2' },
+    });
+
+    const subject = `[Inzending] ${onderwerp} (${minecraftNaam})`;
+    const text = [
+      'Nieuwe inzending via website',
+      '',
+      `Minecraft naam: ${minecraftNaam}`,
+      `Onderwerp: ${onderwerp}`,
+      `Datum inzending: ${datumInzending}`,
+      `Wanneer gebeurd: ${wanneer}`,
+      `Anoniem publiceren: ${anoniem}`,
+      bewijs ? `Bewijs link: ${bewijs}` : 'Bewijs link: (geen)',
+      '',
+      'Gebeurtenis:',
+      gebeurtenis,
+    ].join('\n');
+
+    try {
+      await transporter.sendMail({ from, to, subject, text, replyTo: from });
+      res.statusCode = 303;
+      res.setHeader('Location', '/inzendingen/?verzonden=1');
+      return res.end();
+    } catch {
+      return res.status(500).send('Verzenden mislukt, probeer later opnieuw.');
+    }
+  } catch (e) {
+    return res.status(500).send(`Interne fout: ${e?.message || 'onbekend'}`);
   }
 }

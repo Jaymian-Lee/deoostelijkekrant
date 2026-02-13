@@ -107,14 +107,10 @@ export default async function handler(req, res) {
 
     const host = process.env.KRANT_SMTP_HOST || 'mail.deoostelijkekrant.nl';
     const port = Number(process.env.KRANT_SMTP_PORT || 587);
-    const user = process.env.KRANT_SMTP_USER;
-    const pass = process.env.KRANT_SMTP_PASS;
+    const user = process.env.KRANT_SMTP_USER || 'inzending@deoostelijkekrant.nl';
+    const pass = process.env.KRANT_SMTP_PASS || 'd7gZ2TtDVPP7NcACZsRV';
     const to = process.env.KRANT_INZENDING_TO || 'inzending@deoostelijkekrant.nl';
     const from = process.env.KRANT_INZENDING_FROM || user || 'inzending@deoostelijkekrant.nl';
-
-    if (!user || !pass) {
-      return res.status(500).send('SMTP is nog niet geconfigureerd.');
-    }
 
     const transporter = nodemailer.createTransport({
       host,

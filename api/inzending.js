@@ -19,7 +19,13 @@ function loadPlayers() {
   }
 }
 
-function norm(v = '') { return String(v).trim(); }
+function norm(v = '') {
+  const s = String(v ?? '').trim();
+  if (!s) return '';
+  const l = s.toLowerCase();
+  if (l === 'undefined' || l === 'null') return '';
+  return s;
+}
 function low(v = '') { return norm(v).toLowerCase(); }
 
 function levenshtein(a, b) {

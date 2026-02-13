@@ -2,8 +2,7 @@ import nodemailer from 'nodemailer';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-const DATA_PATH = path.resolve(__dirname, '../data/ncsmp-players.json');
+const DATA_PATH = path.join(process.cwd(), 'data', 'ncsmp-players.json');
 
 function loadPlayers() {
   try {
@@ -60,6 +59,8 @@ function bestMatch(input, names) {
 async function readBody(req) {
   if (typeof req.body === 'string') return new URLSearchParams(req.body);
   if (req.body && typeof req.body === 'object') return new URLSearchParams(Object.entries(req.body));
+
+  if (typeof req.on !== 'function') return new URLSearchParams();
 
   const chunks = [];
   await new Promise((resolve, reject) => {

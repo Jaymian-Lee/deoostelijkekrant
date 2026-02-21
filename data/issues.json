@@ -48,5 +48,15 @@
     "area": "Oost",
     "summary": "Een onverwachte purge teistert Oost, de totem van MeneerSandwich barst en Skoebiedoemannen zet een finale aanval tegen de krant in: de redactie trekt zich terug met een laatste groet.",
     "coverImage": "assets/eindekrant.png"
+  },
+  {
+    "id": "editie-6b",
+    "title": "Blacklist, jacht en verbrijzelde symbolen",
+    "slug": "2026-02-20-editie-6",
+    "date": "2026-02-20",
+    "author": "JaymianLee",
+    "area": "Zuid, Oost & West",
+    "summary": "Skoebiedoemannen jaagt op Kale, Zuid houdt zijn enige blacklist-lid in het vizier en de vulkaan wordt een muziek- en PvP-arena terwijl West onder druk staat.",
+    "coverImage": "assets/groepsfoto.png"
   }
 ]

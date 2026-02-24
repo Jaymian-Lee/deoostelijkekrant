@@ -1,10 +1,8 @@
 (function () {
-  const SESSION_KEY = 'krant_live_popup_shown_v1';
+  const SESSION_KEY = 'krant_live_popup_last_stream_v2';
   const TWITCH_CHANNEL = 'jaymianlee';
   const TWITCH_URL = 'https://www.twitch.tv/jaymianlee';
   const CHECK_URL = `https://decapi.me/twitch/uptime/${TWITCH_CHANNEL}`;
-
-  if (sessionStorage.getItem(SESSION_KEY) === '1') return;
 
   function isLikelyLive(text) {
     if (!text) return false;
@@ -16,7 +14,11 @@
     return true;
   }
 
-  function showPopup() {
+  function normalizeLiveFingerprint(text) {
+    return String(text || '').trim().toLowerCase();
+  }
+
+  function showPopup(streamFingerprint) {
     const wrap = document.createElement('div');
     wrap.className = 'live-popup';
     wrap.innerHTML = `
@@ -26,20 +28,29 @@
       <a class="live-popup-cta" href="${TWITCH_URL}" target="_blank" rel="noopener">Nu kijken</a>
     `;
 
+    const markShown = () => sessionStorage.setItem(SESSION_KEY, streamFingerprint);
+
     wrap.querySelector('.live-popup-close')?.addEventListener('click', () => {
-      sessionStorage.setItem(SESSION_KEY, '1');
+      markShown();
       wrap.remove();
     });
 
     document.body.appendChild(wrap);
-    sessionStorage.setItem(SESSION_KEY, '1');
+    markShown();
   }
 
   async function checkLive() {
     try {
       const res = await fetch(CHECK_URL, { cache: 'no-store' });
       const txt = await res.text();
-      if (isLikelyLive(txt)) showPopup();
+      if (!isLikelyLive(txt)) return;
+
+      const fingerprint = normalizeLiveFingerprint(txt);
+      const lastShownFor = sessionStorage.getItem(SESSION_KEY);
+
+      // Toon opnieuw bij nieuwe livestream (nieuwe uptime/fingerprint), ook op dezelfde dag.
+      if (lastShownFor === fingerprint) return;
+      showPopup(fingerprint);
     } catch (_) {
       // stil falen
     }

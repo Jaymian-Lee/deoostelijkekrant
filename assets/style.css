@@ -159,3 +159,22 @@ img{max-width:100%}
   background: rgba(255, 255, 255, 0.12);
   color: #fff;
 }
+
+/* Footer Twitch live indicator */
+.twitch-live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.twitch-live-indicator .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.12);
+}
+
+.twitch-live-indicator.is-live .dot { background: #26c266; }
+.twitch-live-indicator.is-offline .dot { background: #8d8d8d; }
+.twitch-live-indicator.is-unknown .dot { background: #b3a56a; }

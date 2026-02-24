@@ -24,30 +24,33 @@ function heuristicModeration({ onderwerp, wanneer, gebeurtenis, bewijs }) {
   const words = countWords(allText);
   const bodyWords = countWords(gebeurtenis);
 
-  if (bodyWords < 10) { score -= 45; notes.push('Te weinig inhoud om feitelijk te controleren.'); }
-  if (gebeurtenis.length < 55) { score -= 30; notes.push('Beschrijving is te kort en mist context.'); }
-  if (words < 16) { score -= 15; notes.push('Er zijn weinig concrete details genoemd.'); }
-  if (/(.)\1{7,}/i.test(allText)) { score -= 35; notes.push('Tekst bevat onnatuurlijke herhaling.'); }
-  if (/\b(test|testing|asdf|qwerty|lol|lmao|haha+)\b/i.test(allText)) { score -= 25; notes.push('Lijkt op testtekst of niet-serieuze inhoud.'); }
-  if (/\b(ik weet niet|geen idee|misschien|idk)\b/i.test(allText)) { score -= 15; notes.push('Te onzeker geformuleerd voor publicatie.'); }
+  // Keep this lenient: only block obvious nonsense/spam.
+  if (bodyWords < 3 || gebeurtenis.length < 18) {
+    score -= 65;
+    notes.push('Bericht is te kort en lijkt geen echt nieuwsbericht.');
+  }
+  if (/(.)\1{7,}/i.test(allText)) {
+    score -= 45;
+    notes.push('Tekst bevat onnatuurlijke herhaling.');
+  }
+  if (/\b(test|testing|asdf|qwerty)\b/i.test(allText)) {
+    score -= 40;
+    notes.push('Lijkt op testtekst of spam.');
+  }
+  if (/\b(poep|kaka|scheet|ruik|lekker|kont|pis)\b/i.test(allText) && words < 20) {
+    score -= 60;
+    notes.push('Lijkt op grap- of onzinbericht.');
+  }
 
   const badWords = /(kanker|kk\b|tering|tyfus|nazi|hitler|faggot|nigger)/i;
   if (badWords.test(allText)) { score -= 60; notes.push('Bevat beledigende of ongepaste taal.'); }
 
-  const linkCount = (allText.match(/https?:\/\//g) || []).length;
-  if (linkCount > 3) { score -= 20; notes.push('Te veel links in een enkele inzending.'); }
-
-  if (!/[0-9]/.test(wanneer) && !/gisteren|vandaag|vanavond|vanochtend|nacht|middag|avond/i.test(wanneer)) {
-    score -= 10;
-    notes.push('Moment van gebeurtenis is te vaag.');
-  }
-
   const symbolRatio = ((allText.match(/[^\p{L}\p{N}\s.,!?:\-]/gu) || []).length) / Math.max(allText.length, 1);
-  if (symbolRatio > 0.2) { score -= 25; notes.push('Tekst bevat veel onbruikbare tekens of ruis.'); }
+  if (symbolRatio > 0.35) { score -= 45; notes.push('Tekst bevat veel onbruikbare tekens of ruis.'); }
 
-  if (bewijs && !/^https?:\/\//i.test(bewijs)) { score -= 10; notes.push('Bewijslink is geen geldige URL.'); }
+  if (bewijs && !/^https?:\/\//i.test(bewijs)) { score -= 5; notes.push('Bewijslink lijkt niet helemaal juist.'); }
 
-  return { accepted: score >= 60, score, notes: notes.slice(0, 4), source: 'heuristic' };
+  return { accepted: score >= 45, score, notes: notes.slice(0, 4), source: 'heuristic' };
 }
 
 function safeModerationResult(x) {
@@ -68,8 +71,10 @@ async function llmModeration(payload) {
 
   const system = [
     'Je bent Dirk, moderator voor inzendingen van een online krant.',
-    'Beoordeel of tekst voldoende feitelijk en serieus is.',
-    'Keur af bij onzin, scheldwoorden, ruis, testberichten, of extreem vage meldingen.',
+    'Doelgroep is vooral 12-20 jaar; wees dus vriendelijk en NIET streng op taal, stijl of spelling.',
+    'Keur GOED in twijfelgevallen, ook als tekst informeel of niet perfect is.',
+    'Keur ALLEEN af bij duidelijke onzin/spam/gore grapberichten/geen nieuwsinhoud/beledigende taal.',
+    'Namen of termen uit de server (zoals bijnamen/facties) zijn toegestaan en geen afkeur-reden.',
     'Geef ALLEEN geldige JSON terug met keys: accepted(boolean), score(number 0-100), notes(array van korte Nederlandse redenen).',
     'Houd notes maximaal 4 items.',
   ].join(' ');

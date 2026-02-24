@@ -28,10 +28,10 @@
 .status{font-size:.82rem;text-transform:uppercase;letter-spacing:.08em;border:1px solid rgba(0,0,0,.3);padding:2px 8px}
 .meta-line{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.92rem}
 .warn{border-left:4px solid var(--accent);padding:10px 12px;background:rgba(139,29,29,.06)}
-.inz-card{padding:12px 0;border-bottom:1px solid rgba(0,0,0,.12)}
-.inz-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.inz-avatar{width:36px;height:36px;image-rendering:pixelated;border:1px solid rgba(0,0,0,.25)}
-.inz-name{font-weight:700;color:#111}
+.inz-card{padding:14px 0 12px;border-bottom:1px solid rgba(0,0,0,.12)}
+.inz-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.inz-avatar{width:42px;height:42px;image-rendering:pixelated;border:1px solid rgba(0,0,0,.3);background:#fff}
+.inz-name{font-weight:700;color:#111;font-size:1.28rem;line-height:1}
 
 .dirk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.74);backdrop-filter:blur(2px);z-index:9999;align-items:center;justify-content:center;padding:16px}
 .dirk-modal{max-width:680px;width:100%;position:relative;background:#f8f3e9;border:2px solid rgba(0,0,0,.55);box-shadow:0 20px 50px rgba(0,0,0,.45)}
@@ -209,7 +209,7 @@ function renderInzendingen(items){
   box.innerHTML=items.map(it=>{
     const isAnonymous = it.anoniem === true || String(it.anoniemPubliceren||'').toLowerCase() === 'ja';
     const name = it.minecraftNaam || 'onbekend';
-    const who = isAnonymous ? 'Anoniem' : ('@'+name);
+    const who = isAnonymous ? 'Anoniem' : name;
     const avatarName = isAnonymous ? 'Steve' : name;
     const avatarUrl = `https://mc-heads.net/avatar/${encodeURIComponent(avatarName)}/48`;
     const status = it.status || 'Nieuw';

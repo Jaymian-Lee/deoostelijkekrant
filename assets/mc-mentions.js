@@ -3,7 +3,7 @@
   const IMG_SIZE = 18;
   const SKIP_SELECTOR = [
     'script', 'style', 'noscript', 'textarea', 'code', 'pre',
-    '.jay-link', '.mc-name-inline', '.social-links', '.mobile-menu-panel', '#inzendingen-list', '#credits-list'
+    '.jay-link', '.mc-name-inline', '.social-links', '.mobile-menu-panel', '#inzendingen-list', '#credits-list', '#twitch-live-indicator', '.no-mc-head'
   ].join(',');
 
   function escapeRegex(s) {

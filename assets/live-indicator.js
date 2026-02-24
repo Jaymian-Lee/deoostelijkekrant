@@ -22,7 +22,7 @@
     host = document.createElement('span');
     host.id = 'twitch-live-indicator';
     host.className = 'twitch-live-indicator is-unknown';
-    host.innerHTML = '<span class="dot"></span><a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">Twitch: status laden...</a>';
+    host.innerHTML = '<span class="dot"></span><a class="no-mc-head" href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">Twitch: status laden...</a>';
     footer.appendChild(host);
     return host;
   }
@@ -40,11 +40,11 @@
       node.classList.add(live ? 'is-live' : 'is-offline');
 
       const label = live ? 'Twitch: JaymianLee is live' : 'Twitch: JaymianLee niet live';
-      node.innerHTML = `<span class="dot"></span><a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">${label}</a>`;
+      node.innerHTML = `<span class="dot"></span><a class="no-mc-head" href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">${label}</a>`;
     } catch (_) {
       node.classList.remove('is-live', 'is-offline');
       node.classList.add('is-unknown');
-      node.innerHTML = '<span class="dot"></span><a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">Twitch: onbekend</a>';
+      node.innerHTML = '<span class="dot"></span><a class="no-mc-head" href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">Twitch: onbekend</a>';
     }
   }
 

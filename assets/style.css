@@ -37,6 +37,8 @@ a:hover{color:var(--accent)}
 .social-links svg{width:16px;height:16px;display:block;fill:currentColor}
 .jay-link{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:700;vertical-align:middle}
 .jay-link img{width:18px;height:18px;border:1px solid rgba(0,0,0,.32);image-rendering:pixelated;vertical-align:middle}
+.mc-name-inline{display:inline-flex;align-items:center;gap:4px;vertical-align:baseline;white-space:nowrap}
+.mc-name-inline img{width:18px;height:18px;border:1px solid rgba(0,0,0,.25);image-rendering:pixelated;vertical-align:middle}
 footer{margin-top:18px;border-top:3px double var(--ink);padding-top:12px;display:flex;justify-content:space-between;flex-wrap:wrap;font-size:.95rem;color:var(--muted);gap:10px}
 img{max-width:100%}
 

@@ -199,6 +199,40 @@ function showDirkVerdict(ok, message, notes){
   dirkClose.style.display = 'inline-block';
 }
 
+function renderInzendingen(items){
+  const box=document.getElementById('inzendingen-list');
+  if(!box) return;
+  if(!items || !items.length){
+    box.innerHTML='<p class="muted">Nog geen publieke inzendingen.</p>';
+    return;
+  }
+  box.innerHTML=items.map(it=>{
+    const isAnonymous = it.anoniem === true || String(it.anoniemPubliceren||'').toLowerCase() === 'ja';
+    const name = it.minecraftNaam || 'onbekend';
+    const who = isAnonymous ? 'Anoniem' : ('@'+name);
+    const avatarName = isAnonymous ? 'Steve' : name;
+    const avatarUrl = `https://mc-heads.net/avatar/${encodeURIComponent(avatarName)}/48`;
+    const status = it.status || 'Nieuw';
+    const datum = it.datum || it.datumInzending || '';
+    const onderwerp = it.onderwerp || 'Zonder onderwerp';
+    const samenvatting = it.samenvatting || it.gebeurtenis || '';
+    const herkomst = it.herkomst || '-';
+    return `<article class="inz-card"><div class="inz-head"><img class="inz-avatar" src="${esc(avatarUrl)}" alt="Minecraft hoofd"><div class="inz-name">${esc(who)}</div></div><div class="meta-line"><span class="status">${esc(status)}</span><span>${esc(datum)}</span><span>Herkomst: ${esc(herkomst)}</span></div><h3 style="margin:8px 0 6px">${esc(onderwerp)}</h3><p style="margin:0">${esc(samenvatting)}</p></article>`;
+  }).join('');
+}
+
+async function loadInzendingen(){
+  const box=document.getElementById('inzendingen-list');
+  if(box) box.innerHTML='Laden...';
+  try{
+    const r = await fetch('/api/inzending');
+    const items = await r.json();
+    renderInzendingen(items);
+  }catch(_){
+    if(box) box.innerHTML='<p class="muted">Inzendingen konden niet worden geladen.</p>';
+  }
+}
+
 if(dirkClose){
   dirkClose.addEventListener('click', ()=>{ dirkPop.style.display = 'none'; });
 }
@@ -224,8 +258,12 @@ if(inzForm){
       const fallbackMsg = accepted
         ? `Het bericht over "${onderwerp}" is geaccepteerd en zal verwerkt worden!`
         : 'Dit bericht is helaas niet goedgekeurd door mij, Dirk. Herschrijf het of stuur het door via Discord DM naar @JaymianLee.';
-      showDirkVerdict(accepted, data.message || fallbackMsg, data?.dirk?.notes || []);
-      if(accepted) inzForm.reset();
+      const combinedMsg = data.mailWarning ? `${data.message || fallbackMsg} ${data.mailWarning}` : (data.message || fallbackMsg);
+      showDirkVerdict(accepted, combinedMsg, data?.dirk?.notes || []);
+      if(accepted){
+        inzForm.reset();
+        await loadInzendingen();
+      }
       if(d && !d.value){
         const now=new Date();
         const y=now.getFullYear();
@@ -239,26 +277,7 @@ if(inzForm){
   });
 }
 
-fetch('../data/inzendingen.json').then(r=>r.json()).then(items=>{
-  const box=document.getElementById('inzendingen-list');
-  if(!items.length){ box.innerHTML='<p class="muted">Nog geen publieke inzendingen.</p>'; return; }
-  box.innerHTML=items.map(it=>{
-    const isAnonymous = it.anoniem === true || String(it.anoniemPubliceren||'').toLowerCase() === 'ja';
-    const name = it.minecraftNaam || 'onbekend';
-    const who = isAnonymous ? 'Anoniem' : ('@'+name);
-    const avatarName = isAnonymous ? 'Steve' : name;
-    const avatarUrl = `https://mc-heads.net/avatar/${encodeURIComponent(avatarName)}/48`;
-    const status = it.status || 'Nieuw';
-    const onderwerp = it.onderwerp || 'Zonder onderwerp';
-    const datum = it.datum || it.datumInzending || '';
-    const samenvatting = it.samenvatting || it.gebeurtenis || '';
-    const herkomst = it.herkomst || '-';
-    return `<article class="inz-card"><div class="inz-head"><img class="inz-avatar" src="${esc(avatarUrl)}" alt="Minecraft hoofd"><div class="inz-name">${esc(who)}</div></div><div class="meta-line"><span class="status">${esc(status)}</span><span>${esc(datum)}</span><span>Herkomst: ${esc(herkomst)}</span></div><h3 style="margin:8px 0 6px">${esc(onderwerp)}</h3><p style="margin:0">${esc(samenvatting)}</p></article>`;
-  }).join('');
-}).catch(()=>{
-  const box=document.getElementById('inzendingen-list');
-  if(box) box.innerHTML='<p class="muted">Inzendingen konden niet worden geladen.</p>';
-});
+loadInzendingen();
 </script>
 
 <script>
@@ -275,4 +294,5 @@ fetch('../data/inzendingen.json').then(r=>r.json()).then(items=>{
   document.querySelectorAll('[data-menu-close="1"], .mobile-menu-panel a').forEach(el => el.addEventListener('click', () => setOpen(false)));
 })();
 </script>
+<script src="/assets/mc-mentions.js"></script>
 </body></html>

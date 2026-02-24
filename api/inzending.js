@@ -1,4 +1,5 @@
 import { kv } from '@vercel/kv';
+import nodemailer from 'nodemailer';
 
 const INZENDINGEN_KEY = 'inzendingen:raw';
 const OPENAI_MODEL = process.env.OPENAI_MODERATION_MODEL || 'gpt-4.1-mini';
@@ -23,42 +24,18 @@ function heuristicModeration({ onderwerp, wanneer, gebeurtenis, bewijs }) {
   const words = countWords(allText);
   const bodyWords = countWords(gebeurtenis);
 
-  if (bodyWords < 10) {
-    score -= 45;
-    notes.push('Te weinig inhoud om feitelijk te controleren.');
-  }
-  if (gebeurtenis.length < 55) {
-    score -= 30;
-    notes.push('Beschrijving is te kort en mist context.');
-  }
-  if (words < 16) {
-    score -= 15;
-    notes.push('Er zijn weinig concrete details genoemd.');
-  }
-  if (/(.)\1{7,}/i.test(allText)) {
-    score -= 35;
-    notes.push('Tekst bevat onnatuurlijke herhaling.');
-  }
-  if (/\b(test|testing|asdf|qwerty|lol|lmao|haha+)\b/i.test(allText)) {
-    score -= 25;
-    notes.push('Lijkt op testtekst of niet-serieuze inhoud.');
-  }
-  if (/\b(ik weet niet|geen idee|misschien|idk)\b/i.test(allText)) {
-    score -= 15;
-    notes.push('Te onzeker geformuleerd voor publicatie.');
-  }
+  if (bodyWords < 10) { score -= 45; notes.push('Te weinig inhoud om feitelijk te controleren.'); }
+  if (gebeurtenis.length < 55) { score -= 30; notes.push('Beschrijving is te kort en mist context.'); }
+  if (words < 16) { score -= 15; notes.push('Er zijn weinig concrete details genoemd.'); }
+  if (/(.)\1{7,}/i.test(allText)) { score -= 35; notes.push('Tekst bevat onnatuurlijke herhaling.'); }
+  if (/\b(test|testing|asdf|qwerty|lol|lmao|haha+)\b/i.test(allText)) { score -= 25; notes.push('Lijkt op testtekst of niet-serieuze inhoud.'); }
+  if (/\b(ik weet niet|geen idee|misschien|idk)\b/i.test(allText)) { score -= 15; notes.push('Te onzeker geformuleerd voor publicatie.'); }
 
   const badWords = /(kanker|kk\b|tering|tyfus|nazi|hitler|faggot|nigger)/i;
-  if (badWords.test(allText)) {
-    score -= 60;
-    notes.push('Bevat beledigende of ongepaste taal.');
-  }
+  if (badWords.test(allText)) { score -= 60; notes.push('Bevat beledigende of ongepaste taal.'); }
 
   const linkCount = (allText.match(/https?:\/\//g) || []).length;
-  if (linkCount > 3) {
-    score -= 20;
-    notes.push('Te veel links in een enkele inzending.');
-  }
+  if (linkCount > 3) { score -= 20; notes.push('Te veel links in een enkele inzending.'); }
 
   if (!/[0-9]/.test(wanneer) && !/gisteren|vandaag|vanavond|vanochtend|nacht|middag|avond/i.test(wanneer)) {
     score -= 10;
@@ -66,22 +43,11 @@ function heuristicModeration({ onderwerp, wanneer, gebeurtenis, bewijs }) {
   }
 
   const symbolRatio = ((allText.match(/[^\p{L}\p{N}\s.,!?:\-]/gu) || []).length) / Math.max(allText.length, 1);
-  if (symbolRatio > 0.2) {
-    score -= 25;
-    notes.push('Tekst bevat veel onbruikbare tekens of ruis.');
-  }
+  if (symbolRatio > 0.2) { score -= 25; notes.push('Tekst bevat veel onbruikbare tekens of ruis.'); }
 
-  if (bewijs && !/^https?:\/\//i.test(bewijs)) {
-    score -= 10;
-    notes.push('Bewijslink is geen geldige URL.');
-  }
+  if (bewijs && !/^https?:\/\//i.test(bewijs)) { score -= 10; notes.push('Bewijslink is geen geldige URL.'); }
 
-  return {
-    accepted: score >= 60,
-    score,
-    notes: notes.slice(0, 4),
-    source: 'heuristic',
-  };
+  return { accepted: score >= 60, score, notes: notes.slice(0, 4), source: 'heuristic' };
 }
 
 function safeModerationResult(x) {
@@ -158,13 +124,74 @@ async function saveInzending(item) {
   if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
     throw new Error('Vercel KV env vars ontbreken (KV_REST_API_URL/KV_REST_API_TOKEN).');
   }
-
   await kv.lpush(INZENDINGEN_KEY, JSON.stringify(item));
   await kv.ltrim(INZENDINGEN_KEY, 0, 1999);
 }
 
+async function loadInzendingen() {
+  const rows = await kv.lrange(INZENDINGEN_KEY, 0, 199);
+  return (rows || []).map((row) => {
+    try {
+      return typeof row === 'string' ? JSON.parse(row) : row;
+    } catch {
+      return null;
+    }
+  }).filter(Boolean);
+}
+
+async function sendInzendingMail(inzending) {
+  const host = process.env.KRANT_SMTP_HOST;
+  const port = Number(process.env.KRANT_SMTP_PORT || 587);
+  const user = process.env.KRANT_SMTP_USER;
+  const pass = process.env.KRANT_SMTP_PASS;
+  const from = process.env.KRANT_INZENDING_FROM || user || 'noreply@jaymian-lee.nl';
+  const to = (process.env.KRANT_INZENDING_TO || 'info@jaymian-lee.nl,dirk@jaymian-lee.nl')
+    .split(',')
+    .map((x) => x.trim())
+    .filter(Boolean)
+    .join(', ');
+
+  if (!host || !user || !pass) {
+    return { ok: false, reason: 'SMTP niet volledig ingesteld' };
+  }
+
+  const transporter = nodemailer.createTransport({
+    host,
+    port,
+    secure: port === 465,
+    auth: { user, pass },
+    tls: { minVersion: 'TLSv1.2' },
+  });
+
+  const subject = `[Inzending] ${inzending.onderwerp} (${inzending.minecraftNaam})`;
+  const text = [
+    'Nieuwe inzending via website',
+    '',
+    `ID: ${inzending.id}`,
+    `Minecraft naam: ${inzending.minecraftNaam}`,
+    `Herkomst: ${inzending.herkomst}`,
+    `Onderwerp: ${inzending.onderwerp}`,
+    `Datum inzending: ${inzending.datumInzending}`,
+    `Wanneer gebeurd: ${inzending.wanneer}`,
+    `Anoniem publiceren: ${inzending.anoniemPubliceren}`,
+    `Moderatie: ${inzending.moderation?.by || 'Dirk'} (${inzending.moderation?.source || 'unknown'}) score ${inzending.moderation?.score ?? '-'}`,
+    inzending.bewijsLink ? `Bewijs link: ${inzending.bewijsLink}` : 'Bewijs link: (geen)',
+    '',
+    'Gebeurtenis:',
+    inzending.gebeurtenis,
+  ].join('\n');
+
+  await transporter.sendMail({ from, to, subject, text, replyTo: from });
+  return { ok: true };
+}
+
 export default async function handler(req, res) {
   try {
+    if (req.method === 'GET') {
+      const items = await loadInzendingen();
+      return res.status(200).json(items);
+    }
+
     if (req.method !== 'POST') return res.status(405).send('Method Not Allowed');
 
     const form = await readBody(req);
@@ -229,6 +256,13 @@ export default async function handler(req, res) {
 
     await saveInzending(inzending);
 
+    let mailWarning = null;
+    try {
+      await sendInzendingMail(inzending);
+    } catch {
+      mailWarning = 'Inzending opgeslagen, maar e-mail versturen is mislukt.';
+    }
+
     return res.status(200).json({
       accepted: true,
       onderwerp,
@@ -238,6 +272,7 @@ export default async function handler(req, res) {
         source: moderation.source,
       },
       message: `Het bericht over \"${onderwerp}\" is geaccepteerd en zal verwerkt worden!`,
+      mailWarning,
     });
   } catch (e) {
     return res.status(500).json({ accepted: false, onderwerp: '', message: `Interne fout: ${e?.message || 'onbekend'}` });

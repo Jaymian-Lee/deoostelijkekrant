@@ -24,7 +24,33 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css"/>
-<style>.status{font-size:.82rem;text-transform:uppercase;letter-spacing:.08em;border:1px solid rgba(0,0,0,.3);padding:2px 8px}.meta-line{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.92rem}.warn{border-left:4px solid var(--accent);padding:10px 12px;background:rgba(139,29,29,.06)}.inz-card{padding:12px 0;border-bottom:1px solid rgba(0,0,0,.12)}.inz-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}.inz-avatar{width:36px;height:36px;image-rendering:pixelated;border:1px solid rgba(0,0,0,.25)}.inz-name{font-weight:700;color:#111}</style>
+<style>
+.status{font-size:.82rem;text-transform:uppercase;letter-spacing:.08em;border:1px solid rgba(0,0,0,.3);padding:2px 8px}
+.meta-line{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.92rem}
+.warn{border-left:4px solid var(--accent);padding:10px 12px;background:rgba(139,29,29,.06)}
+.inz-card{padding:12px 0;border-bottom:1px solid rgba(0,0,0,.12)}
+.inz-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.inz-avatar{width:36px;height:36px;image-rendering:pixelated;border:1px solid rgba(0,0,0,.25)}
+.inz-name{font-weight:700;color:#111}
+
+.dirk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.74);backdrop-filter:blur(2px);z-index:9999;align-items:center;justify-content:center;padding:16px}
+.dirk-modal{max-width:680px;width:100%;position:relative;background:#f8f3e9;border:2px solid rgba(0,0,0,.55);box-shadow:0 20px 50px rgba(0,0,0,.45)}
+.dirk-head{display:flex;gap:12px;align-items:center}
+.dirk-avatar{width:46px;height:46px;image-rendering:pixelated;border:1px solid rgba(0,0,0,.35)}
+.dirk-title{margin:0;color:#111;font-size:1.25rem}
+.dirk-sub{margin:3px 0 0;color:#2a2a2a}
+.dirk-progress{height:12px;margin-top:14px;border:1px solid rgba(0,0,0,.35);background:rgba(255,255,255,.65);position:relative;overflow:hidden}
+.dirk-progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#8b1d1d,#b93f2f,#d38a50);transition:width .28s ease}
+.dirk-progress-bar::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.25) 0 8px,rgba(255,255,255,.05) 8px 16px);animation:dirkStripe .8s linear infinite}
+.dirk-status{margin:10px 0 0;color:#2f2f2f}
+.dirk-result{margin:10px 0 0;padding:10px 12px;border-left:4px solid #8b1d1d;background:rgba(139,29,29,.08)}
+.dirk-result.ok{border-left-color:#2f6a3a;background:rgba(47,106,58,.1)}
+.dirk-actions{display:flex;justify-content:flex-end;margin-top:12px}
+.dirk-close{border:1px solid rgba(0,0,0,.3);background:#fff;padding:6px 10px;cursor:pointer}
+.dirk-pulse{animation:dirkPulse .55s ease}
+@keyframes dirkStripe{from{transform:translateX(0)}to{transform:translateX(16px)}}
+@keyframes dirkPulse{0%{transform:scale(.99)}100%{transform:scale(1)}}
+</style>
 </head><body><main class="paper">
 <header class="masthead">
     <div class="masthead-top"><p class="kicker-left">Tips uit de community</p><a href="../" aria-label="Naar home"><img class="logo-top-right" src="../assets/logo-deoostelijkekrant.png" alt="De Oostelijke Krant logo"></a><button class="mobile-nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav">Menu</button></div><h1 class="home-main-title">Inzendingen</h1>
@@ -90,29 +116,26 @@
   <div id="inzendingen-list" class="card">Laden...</div>
 </section>
 
-<div id="verzonden-popup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(2px);z-index:9999;align-items:center;justify-content:center;padding:16px">
-  <div class="card" style="max-width:620px;width:100%;position:relative;background:#fff;border:2px solid rgba(0,0,0,.55);box-shadow:0 20px 50px rgba(0,0,0,.45)">
-    <button id="verzonden-close" type="button" style="position:absolute;right:10px;top:10px;border:1px solid rgba(0,0,0,.3);background:#fff;padding:4px 8px;cursor:pointer">Sluit</button>
-    <h3 style="margin-top:0;color:#111">Inzending ontvangen</h3>
-    <p style="color:#111"><b>De redacteur van De Oostelijke Krant, <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a>, bedankt je voor je inzending.</b></p>
-    <p style="color:#222">We zullen het zo snel mogelijk doornemen en er gebruik van maken in de komende editie.</p>
+<div id="dirk-popup" class="dirk-overlay">
+  <div class="card dirk-modal">
+    <div class="dirk-head">
+      <img class="dirk-avatar" src="https://mc-heads.net/avatar/JaymianLee/64" alt="Minecraft hoofd van JaymianLee">
+      <div>
+        <h3 id="dirk-title" class="dirk-title">Dirk beoordeelt je inzending...</h3>
+        <p class="dirk-sub">Je inzending wordt momenteel beoordeeld door Dirk, de AI assistant van <a class="jay-link" href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener"><img src="https://mc-heads.net/avatar/JaymianLee/24" alt="Minecraft hoofd van JaymianLee">JaymianLee</a>.</p>
+      </div>
+    </div>
+    <div class="dirk-progress"><div id="dirk-progress-bar" class="dirk-progress-bar"></div></div>
+    <p id="dirk-status" class="dirk-status">Analyse wordt gestart...</p>
+    <p id="dirk-result" class="dirk-result" style="display:none"></p>
+    <div class="dirk-actions"><button id="dirk-close" type="button" class="dirk-close" style="display:none">Sluit</button></div>
   </div>
 </div>
 
-<footer><span>© De Oostelijke Krant</span><span>Redactie: <a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">JaymianLee</a></span><span><a href="../credits/">Credits</a></span></footer>
+<footer><span>© De Oostelijke Krant</span><span>Redactie: <a class="jay-link" href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener"><img src="https://mc-heads.net/avatar/JaymianLee/24" alt="Minecraft hoofd van JaymianLee">JaymianLee</a></span><span><a href="../credits/">Credits</a></span></footer>
 </main>
 
 <script>
-if(new URLSearchParams(location.search).get('verzonden')==='1'){
-  const pop=document.getElementById('verzonden-popup');
-  if(pop){
-    pop.style.display='flex';
-    const close=document.getElementById('verzonden-close');
-    if(close) close.addEventListener('click', ()=> pop.style.display='none');
-    pop.addEventListener('click', (e)=>{ if(e.target===pop) pop.style.display='none'; });
-  }
-}
-
 const d=document.getElementById('inzend_datum');
 if(d && !d.value){
   const now=new Date();
@@ -128,6 +151,92 @@ function esc(s){
   return String(s||'').replace(/[&<>"']/g, (ch)=>({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[ch]));
+}
+
+const inzForm = document.getElementById('inzending-form');
+const dirkPop = document.getElementById('dirk-popup');
+const dirkBar = document.getElementById('dirk-progress-bar');
+const dirkTitle = document.getElementById('dirk-title');
+const dirkStatus = document.getElementById('dirk-status');
+const dirkResult = document.getElementById('dirk-result');
+const dirkClose = document.getElementById('dirk-close');
+
+let progressTimer = null;
+function startDirkProgress(){
+  let progress = 7;
+  dirkBar.style.width = `${progress}%`;
+  progressTimer = setInterval(()=>{
+    progress = Math.min(progress + Math.random() * 12, 92);
+    dirkBar.style.width = `${progress.toFixed(0)}%`;
+  }, 320);
+}
+function endDirkProgress(){
+  if(progressTimer) clearInterval(progressTimer);
+  progressTimer = null;
+  dirkBar.style.width = '100%';
+}
+function openDirkModal(){
+  dirkPop.style.display = 'flex';
+  dirkTitle.textContent = 'Dirk beoordeelt je inzending...';
+  dirkStatus.textContent = 'Je bericht wordt gescand op kwaliteit, context en betrouwbaarheid.';
+  dirkResult.style.display = 'none';
+  dirkResult.className = 'dirk-result';
+  dirkClose.style.display = 'none';
+  dirkPop.querySelector('.dirk-modal').classList.remove('dirk-pulse');
+  startDirkProgress();
+}
+function showDirkVerdict(ok, message, notes){
+  endDirkProgress();
+  dirkPop.querySelector('.dirk-modal').classList.add('dirk-pulse');
+  dirkTitle.textContent = ok ? 'Dirk heeft groen licht gegeven' : 'Dirk heeft deze inzending afgekeurd';
+  dirkStatus.textContent = ok
+    ? 'Deze inzending gaat door naar de redactie.'
+    : 'Herschrijf je inzending met meer concrete feiten.';
+  dirkResult.style.display = 'block';
+  dirkResult.className = `dirk-result ${ok ? 'ok' : ''}`;
+  const details = Array.isArray(notes) && notes.length ? ` Reden: ${notes.join(' ')}` : '';
+  dirkResult.textContent = `${message}${details}`;
+  dirkClose.style.display = 'inline-block';
+}
+
+if(dirkClose){
+  dirkClose.addEventListener('click', ()=>{ dirkPop.style.display = 'none'; });
+}
+if(dirkPop){
+  dirkPop.addEventListener('click', (e)=>{ if(e.target===dirkPop && dirkClose.style.display!=='none') dirkPop.style.display='none'; });
+}
+
+if(inzForm){
+  inzForm.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    openDirkModal();
+
+    try{
+      const payload = new URLSearchParams(new FormData(inzForm));
+      const r = await fetch('/api/inzending', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: payload.toString(),
+      });
+      const data = await r.json();
+      const accepted = !!data.accepted;
+      const onderwerp = (inzForm.elements.onderwerp && inzForm.elements.onderwerp.value) ? inzForm.elements.onderwerp.value : '';
+      const fallbackMsg = accepted
+        ? `Het bericht over "${onderwerp}" is geaccepteerd en zal verwerkt worden!`
+        : 'Dit bericht is helaas niet goedgekeurd door mij, Dirk. Herschrijf het of stuur het door via Discord DM naar @JaymianLee.';
+      showDirkVerdict(accepted, data.message || fallbackMsg, data?.dirk?.notes || []);
+      if(accepted) inzForm.reset();
+      if(d && !d.value){
+        const now=new Date();
+        const y=now.getFullYear();
+        const m=String(now.getMonth()+1).padStart(2,'0');
+        const day=String(now.getDate()).padStart(2,'0');
+        d.value=`${y}-${m}-${day}`;
+      }
+    }catch(_){
+      showDirkVerdict(false, 'Dirk kon je inzending nu niet analyseren. Probeer het opnieuw over een paar seconden.', []);
+    }
+  });
 }
 
 fetch('../data/inzendingen.json').then(r=>r.json()).then(items=>{

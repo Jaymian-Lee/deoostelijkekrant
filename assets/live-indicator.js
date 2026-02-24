@@ -39,7 +39,7 @@
       node.classList.remove('is-unknown', 'is-live', 'is-offline');
       node.classList.add(live ? 'is-live' : 'is-offline');
 
-      const label = live ? 'Twitch: live' : 'Twitch: niet live';
+      const label = live ? 'Twitch: JaymianLee is live' : 'Twitch: JaymianLee niet live';
       node.innerHTML = `<span class="dot"></span><a href="https://twitch.tv/jaymianlee" target="_blank" rel="noopener">${label}</a>`;
     } catch (_) {
       node.classList.remove('is-live', 'is-offline');

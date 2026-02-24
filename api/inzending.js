@@ -1,22 +1,6 @@
-import nodemailer from 'nodemailer';
-import fs from 'node:fs';
-import path from 'node:path';
+import { kv } from '@vercel/kv';
 
-const DATA_PATH = path.join(process.cwd(), 'data', 'ncsmp-players.json');
-
-function loadPlayers() {
-  try {
-    const raw = fs.readFileSync(DATA_PATH, 'utf8');
-    const data = JSON.parse(raw);
-    return {
-      oost: (data?.teams?.oost || []).map(String),
-      all: (data?.allPlayersSorted || []).map(String),
-      unlockDate: data?.unlockAllTeamsFrom || '2026-02-20',
-    };
-  } catch {
-    return { oost: [], all: [], unlockDate: '2026-02-20' };
-  }
-}
+const INZENDINGEN_KEY = 'inzendingen:raw';
 
 function norm(v = '') {
   const s = String(v ?? '').trim();
@@ -25,41 +9,19 @@ function norm(v = '') {
   if (l === 'undefined' || l === 'null') return '';
   return s;
 }
-function low(v = '') { return norm(v).toLowerCase(); }
-
-function levenshtein(a, b) {
-  a = low(a); b = low(b);
-  const dp = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
-  for (let i = 0; i <= a.length; i++) dp[i][0] = i;
-  for (let j = 0; j <= b.length; j++) dp[0][j] = j;
-  for (let i = 1; i <= a.length; i++) {
-    for (let j = 1; j <= b.length; j++) {
-      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
-    }
-  }
-  return dp[a.length][b.length];
-}
-
-function bestMatch(input, names) {
-  const x = norm(input);
-  if (!x) return null;
-  const exact = names.find(n => n === x);
-  if (exact) return { name: exact, score: 0 };
-  const ci = names.find(n => low(n) === low(x));
-  if (ci) return { name: ci, score: 0 };
-  let best = null;
-  for (const n of names) {
-    const d = levenshtein(x, n);
-    if (!best || d < best.score) best = { name: n, score: d };
-  }
-  return best && best.score <= 2 ? best : null;
-}
-
 async function readBody(req) {
   if (typeof req.body === 'string') return new URLSearchParams(req.body);
   if (req.body && typeof req.body === 'object') return new URLSearchParams(Object.entries(req.body));
   return new URLSearchParams();
+}
+
+async function saveInzending(item) {
+  if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
+    throw new Error('Vercel KV env vars ontbreken (KV_REST_API_URL/KV_REST_API_TOKEN).');
+  }
+
+  await kv.lpush(INZENDINGEN_KEY, JSON.stringify(item));
+  await kv.ltrim(INZENDINGEN_KEY, 0, 1999);
 }
 
 export default async function handler(req, res) {
@@ -76,72 +38,45 @@ export default async function handler(req, res) {
 
     const minecraftNaamRaw = norm(form.get('minecraft_naam'));
     const onderwerp = norm(form.get('onderwerp'));
+    const herkomst = norm(form.get('herkomst_team'));
     const datumInzending = norm(form.get('datum_inzending'));
     const wanneer = norm(form.get('wanneer'));
     const gebeurtenis = norm(form.get('gebeurtenis'));
     const anoniem = norm(form.get('anoniem_publiceren')) || 'Nee';
     const bewijs = norm(form.get('bewijs_link'));
 
-    if (!minecraftNaamRaw || !onderwerp || !datumInzending || !wanneer || !gebeurtenis) {
+    if (!minecraftNaamRaw || !onderwerp || !herkomst || !datumInzending || !wanneer || !gebeurtenis) {
       return res.status(400).send('Verplichte velden ontbreken.');
     }
-
-    const { oost, all, unlockDate } = loadPlayers();
-    const allowAll = new Date() >= new Date(`${unlockDate}T00:00:00`);
-    const allowed = allowAll ? all : oost;
-
-    if (!Array.isArray(allowed) || allowed.length === 0) {
-      return res.status(503).send('Validatielijst tijdelijk niet beschikbaar, probeer later opnieuw.');
+    const toegestaneHerkomst = ['Noord', 'Oost', 'Zuid', 'West'];
+    if (!toegestaneHerkomst.includes(herkomst)) {
+      return res.status(400).send('Ongeldige herkomst.');
     }
 
-    const match = bestMatch(minecraftNaamRaw, allowed);
+    const minecraftNaam = minecraftNaamRaw;
+    const now = new Date().toISOString();
 
-    if (!match) {
-      const msg = allowAll
-        ? 'Je gebruikersnaam staat niet in de deelnemerslijst. Weet je zeker dat je je naam juist hebt ingevuld, denk aan hoofdletters, speciale tekens en cijfers.'
-        : 'Je hoort helaas niet bij team OOST en mag daarom geen tips sturen. Dit zal later komen na de val van de muur. Weet je zeker dat je je naam juist hebt ingevuld, denk aan hoofdletters, speciale tekens en cijfers.';
-      return res.status(403).send(msg);
-    }
-
-    const minecraftNaam = match.name;
-
-    const host = process.env.KRANT_SMTP_HOST || 'mail.deoostelijkekrant.nl';
-    const port = Number(process.env.KRANT_SMTP_PORT || 587);
-    const user = process.env.KRANT_SMTP_USER || 'inzending@deoostelijkekrant.nl';
-    const pass = process.env.KRANT_SMTP_PASS || 'd7gZ2TtDVPP7NcACZsRV';
-    const to = process.env.KRANT_INZENDING_TO || 'inzending@deoostelijkekrant.nl';
-    const from = process.env.KRANT_INZENDING_FROM || user || 'inzending@deoostelijkekrant.nl';
-
-    const transporter = nodemailer.createTransport({
-      host,
-      port,
-      secure: false,
-      auth: { user, pass },
-      tls: { minVersion: 'TLSv1.2' },
-    });
-
-    const subject = `[Inzending] ${onderwerp} (${minecraftNaam})`;
-    const text = [
-      'Nieuwe inzending via website',
-      '',
-      `Minecraft naam: ${minecraftNaam}`,
-      `Onderwerp: ${onderwerp}`,
-      `Datum inzending: ${datumInzending}`,
-      `Wanneer gebeurd: ${wanneer}`,
-      `Anoniem publiceren: ${anoniem}`,
-      bewijs ? `Bewijs link: ${bewijs}` : 'Bewijs link: (geen)',
-      '',
-      'Gebeurtenis:',
+    const inzending = {
+      id: `inz_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      status: 'Nieuw',
+      minecraftNaam,
+      onderwerp,
+      herkomst,
+      datumInzending,
+      wanneer,
       gebeurtenis,
-    ].join('\n');
+      anoniemPubliceren: anoniem,
+      bewijsLink: bewijs || null,
+      aangemaaktOp: now,
+    };
 
     try {
-      await transporter.sendMail({ from, to, subject, text, replyTo: from });
+      await saveInzending(inzending);
       res.statusCode = 303;
       res.setHeader('Location', '/inzendingen/?verzonden=1');
       return res.end();
     } catch {
-      return res.status(500).send('Verzenden mislukt, probeer later opnieuw.');
+      return res.status(500).send('Opslaan mislukt, probeer later opnieuw.');
     }
   } catch (e) {
     return res.status(500).send(`Interne fout: ${e?.message || 'onbekend'}`);

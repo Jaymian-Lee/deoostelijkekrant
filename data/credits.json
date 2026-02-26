@@ -85,5 +85,12 @@
     "role": "Donateur",
     "contribution": "Donatie aan De Oostelijke Krant.",
     "socials": []
+  },
+  {
+    "displayName": "_BusinessBear_",
+    "username": "_BusinessBear_",
+    "role": "Support",
+    "contribution": "Hulp bij het overleven van De Oostelijke Krant.",
+    "socials": []
   }
 ]
